@@ -15,7 +15,7 @@ class Game:
       self._FramePerSec = pygame.time.Clock()
 
       # Screen information
-      SCREEN_WIDTH = 400
+      SCREEN_WIDTH = 800
       SCREEN_HEIGHT = 600
 
       #set background
