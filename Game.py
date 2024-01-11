@@ -1,6 +1,6 @@
 import pygame, sys
 from pygame.locals import *
- 
+from Broiler import Broiler
 # Predefined some colors
 BLUE  = (0, 0, 255)
 RED   = (255, 0, 0)
@@ -33,14 +33,15 @@ class Game:
       pass
 
    def render(self):
-      pass
+      self.vaporeon.draw(self._DISPLAYSURF)
+      
 
    def exit(self):
       pygame.quit()
       sys.exit()
  
    def execute(self):
-
+      self.vaporeon = Broiler()
       while(True):
 
          for event in pygame.event.get():
