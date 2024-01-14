@@ -25,19 +25,19 @@ class Game:
 
       #set background
       self._DISPLAYSURF = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
-      self._DISPLAYSURF.fill(WHITE)
+      self._DISPLAYSURF.fill(BLACK)
       pygame.display.set_caption("Space Invaders")
 
       self.game_objects = []
       self.pool = Pool()
-      self.pool.register_category("Polish",PolishFactory(),10)
+      self.pool.register_category("Broiler",BroilerFactory(),10)
       self.pool.register_category("Missile",MissileFactory(),100)
       
  
    def genereate_lvl(self):
-      for i in range(0,800,50):
-         ship = self.pool.get_object("Polish")
-         ship.enable(i,550)
+      for i in range(0,900,50):
+         ship = self.pool.get_object("Broiler")
+         ship.enable(i,0)
          self.game_objects.append(ship)
 
 
@@ -50,6 +50,7 @@ class Game:
          obj.update()
 
    def render(self):
+      self._DISPLAYSURF.fill(BLACK)
       for obj in self.game_objects:
          obj.draw(self._DISPLAYSURF)
       

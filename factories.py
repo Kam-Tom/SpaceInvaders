@@ -7,6 +7,9 @@ from Leghorn import Leghorn
 #Missile
 from Missile import Missile
 
+from ShipModel import ShipModelFactory
+
+ship_model_factory = ShipModelFactory()
 
 class DrawableFactory(ABC):
     @abstractmethod
@@ -15,15 +18,15 @@ class DrawableFactory(ABC):
 
 class BroilerFactory(DrawableFactory):
     def create(self) -> Drawable:
-        return Broiler()
+        return Broiler(ship_model_factory)
     
 class LeghornFactory(DrawableFactory):
     def create(self) -> Drawable:
-        return Leghorn()
+        return Leghorn(ship_model_factory)
     
 class PolishFactory(DrawableFactory):
     def create(self) -> Drawable:
-        return Polish()
+        return Polish(ship_model_factory)
     
 class MissileFactory(DrawableFactory):
     def create(self) -> Drawable:
