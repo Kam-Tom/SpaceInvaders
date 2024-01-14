@@ -1,22 +1,30 @@
-import Ship
+from abc import ABC, abstractmethod 
+from Drawable import Drawable
+#Ships
 from Broiler import Broiler
 from Polish import Polish
 from Leghorn import Leghorn
-from abc import ABC, abstractmethod 
+#Missile
+from Missile import Missile
 
-class ShipFactory(ABC):
+
+class DrawableFactory(ABC):
     @abstractmethod
-    def create(self) -> Ship:
+    def create(self) -> Drawable:
         pass
 
-class BroilerFactory(ShipFactory):
-    def create(self) -> Ship:
+class BroilerFactory(DrawableFactory):
+    def create(self) -> Drawable:
         return Broiler()
     
-class LeghornFactory(ShipFactory):
-    def create(self) -> Ship:
+class LeghornFactory(DrawableFactory):
+    def create(self) -> Drawable:
         return Leghorn()
     
-class PolishFactory(ShipFactory):
-    def create(self) -> Ship:
+class PolishFactory(DrawableFactory):
+    def create(self) -> Drawable:
         return Polish()
+    
+class MissileFactory(DrawableFactory):
+    def create(self) -> Drawable:
+        return Missile()

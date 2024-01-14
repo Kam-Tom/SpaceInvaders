@@ -1,16 +1,16 @@
 from Drawable import Drawable
-from factories import ShipFactory
+from factories import DrawableFactory
 
 class Pool:
     def __init__(self):
         self.pools = {}
         self.factories = {}
     
-    def register_category(self, category: str, factory: ShipFactory, initial_size: int):
+    def register_category(self, category: str, factory: DrawableFactory, initial_size: int):
         self.pools[category] = []
         self.factories[category] = factory
         for i in range(initial_size):
-            self.pools[category].append(factory.create())
+            self.pools[category].append(self.factories[category].create())
 
     def get_object(self, category: str) -> Drawable:
         if category not in self.pools:

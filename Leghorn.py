@@ -1,8 +1,8 @@
 import pygame
-from Ship import Ship
+from AIChicken import AIChicken
 
 
-class Leghorn(Ship):
+class Leghorn(AIChicken):
     
     def __init__(self):
         self.image = pygame.image.load("vaporeon.jpg")

@@ -1,8 +1,8 @@
 import pygame
-from Ship import Ship
+from AIChicken import AIChicken
 
 
-class Broiler(Ship):
+class Broiler(AIChicken):
     
     def __init__(self):
         self.image = pygame.image.load("vaporeon.jpg")
@@ -14,7 +14,4 @@ class Broiler(Ship):
 
     def update(self):
         pass
-
-
-
 

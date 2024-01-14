@@ -1,6 +1,11 @@
 import pygame, sys
 from pygame.locals import *
+from Pool import Pool
+from factories import *
+from Polish import Polish
 from Broiler import Broiler
+from Leghorn import Leghorn
+from Missile import Missile
 # Predefined some colors
 BLUE  = (0, 0, 255)
 RED   = (255, 0, 0)
@@ -22,18 +27,31 @@ class Game:
       self._DISPLAYSURF = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
       self._DISPLAYSURF.fill(WHITE)
       pygame.display.set_caption("Space Invaders")
+
+      self.game_objects = []
+      self.pool = Pool()
+      self.pool.register_category("Polish",PolishFactory(),10)
+      self.pool.register_category("Missile",MissileFactory(),100)
       
  
- 
+   def genereate_lvl(self):
+      for i in range(0,800,50):
+         ship = self.pool.get_object("Polish")
+         ship.enable(i,550)
+         self.game_objects.append(ship)
+
+
    def on_event(self, event):
       if event.type == QUIT:
          self.exit()
 
    def game_loop(self):
-      pass
+      for obj in self.game_objects:
+         obj.update()
 
    def render(self):
-      self.vaporeon.draw(self._DISPLAYSURF)
+      for obj in self.game_objects:
+         obj.draw(self._DISPLAYSURF)
       
 
    def exit(self):
@@ -41,7 +59,7 @@ class Game:
       sys.exit()
  
    def execute(self):
-      self.vaporeon = Broiler()
+      self.genereate_lvl()
       while(True):
 
          for event in pygame.event.get():
