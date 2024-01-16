@@ -37,6 +37,7 @@ class Game:
       self.pool.register_category("Missile",MissileFactory(),100)
       self.player = self.pool.get_object("Player")
       self.player.enable(400, 550)
+      self.player.set_pool(self.pool)
       self.input_handler = GameInputHandler(self.player)
       
  
@@ -55,10 +56,13 @@ class Game:
    def game_loop(self):
       for obj in self.game_objects:
          obj.update()
+      self.player.move_missiles()
 
    def render(self):
       self._DISPLAYSURF.fill(BLACK)
       for obj in self.game_objects:
+         obj.draw(self._DISPLAYSURF)
+      for obj in self.player.missiles:
          obj.draw(self._DISPLAYSURF)
       
 

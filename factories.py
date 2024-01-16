@@ -35,4 +35,4 @@ class PolishFactory(DrawableFactory):
     
 class MissileFactory(DrawableFactory):
     def create(self) -> Drawable:
-        return Missile()
+        return Missile((5, 10), "missile_blue.png")

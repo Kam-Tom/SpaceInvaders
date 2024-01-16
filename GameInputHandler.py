@@ -2,6 +2,7 @@ import pygame
 
 from MovementLeftCommand import MovementLeftCommand
 from MovementRightCommand import MovementRightCommand
+from ShootCommand import ShootCommand
 
 class GameInputHandler:
     def __init__(self, player):
@@ -18,3 +19,5 @@ class GameInputHandler:
             self.set_command(MovementLeftCommand(self.player))
         if keys[pygame.K_RIGHT]:
             self.set_command(MovementRightCommand(self.player))
+        if keys[pygame.K_SPACE]:
+            self.set_command(ShootCommand(self.player))
