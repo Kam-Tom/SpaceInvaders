@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod 
 from Drawable import Drawable
 #Ships
+from Player import Player
 from Broiler import Broiler
 from Polish import Polish
 from Leghorn import Leghorn
@@ -15,6 +16,10 @@ class DrawableFactory(ABC):
     @abstractmethod
     def create(self) -> Drawable:
         pass
+
+class PlayerFactory(DrawableFactory):
+    def create(self) -> Drawable:
+        return Player(ship_model_factory)
 
 class BroilerFactory(DrawableFactory):
     def create(self) -> Drawable:

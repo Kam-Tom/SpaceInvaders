@@ -2,10 +2,12 @@ import pygame, sys
 from pygame.locals import *
 from Pool import Pool
 from factories import *
+from Player import Player
 from Polish import Polish
 from Broiler import Broiler
 from Leghorn import Leghorn
 from Missile import Missile
+from GameInputHandler import GameInputHandler
 # Predefined some colors
 BLUE  = (0, 0, 255)
 RED   = (255, 0, 0)
@@ -30,11 +32,16 @@ class Game:
 
       self.game_objects = []
       self.pool = Pool()
+      self.pool.register_category("Player",PlayerFactory(),1)
       self.pool.register_category("Broiler",BroilerFactory(),10)
       self.pool.register_category("Missile",MissileFactory(),100)
+      self.player = self.pool.get_object("Player")
+      self.player.enable(400, 550)
+      self.input_handler = GameInputHandler(self.player)
       
  
    def genereate_lvl(self):
+      self.game_objects.append(self.player)
       for i in range(0,900,50):
          ship = self.pool.get_object("Broiler")
          ship.enable(i,0)
@@ -70,6 +77,9 @@ class Game:
          self.render()
 
          pygame.display.update()
+
+         self.input_handler.handle_input()
+
          self._FramePerSec.tick(self._FPS)
 
 
