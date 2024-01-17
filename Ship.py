@@ -1,7 +1,7 @@
 from Drawable import Drawable
 
 class Ship(Drawable):
-    def __init__(self):
+    def __init__(self,shoot_callback):
         pass
         
     def draw(self, surface):

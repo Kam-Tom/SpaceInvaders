@@ -18,8 +18,10 @@ class DrawableFactory(ABC):
         pass
 
 class PlayerFactory(DrawableFactory):
+    def __init__(self,on_shoot) -> None:
+        self.on_shoot = on_shoot
     def create(self) -> Drawable:
-        return Player(ship_model_factory)
+        return Player(ship_model_factory,self.on_shoot)
 
 class BroilerFactory(DrawableFactory):
     def create(self) -> Drawable:
@@ -34,5 +36,7 @@ class PolishFactory(DrawableFactory):
         return Polish(ship_model_factory)
     
 class MissileFactory(DrawableFactory):
+    def __init__(self,on_disable) -> None:
+        self.on_disable = on_disable
     def create(self) -> Drawable:
-        return Missile((5, 10), "missile_blue.png")
+        return Missile((5, 10), "missile_blue.png",self.on_disable)

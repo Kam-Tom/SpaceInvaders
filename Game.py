@@ -32,15 +32,22 @@ class Game:
 
       self.game_objects = []
       self.pool = Pool()
-      self.pool.register_category("Player",PlayerFactory(),1)
-      self.pool.register_category("Broiler",BroilerFactory(),10)
-      self.pool.register_category("Missile",MissileFactory(),100)
+      self.pool.register_category(Player.__name__,PlayerFactory(self.shoot),1)
+      self.pool.register_category(Broiler.__name__,BroilerFactory(),10)
+      self.pool.register_category(Missile.__name__,MissileFactory(self.destroy_object),100)
       self.player = self.pool.get_object("Player")
       self.player.enable(400, 550)
-      self.player.set_pool(self.pool)
       self.input_handler = GameInputHandler(self.player)
-      
- 
+   
+   def destroy_object(self,obj):
+      self.pool.return_object(obj.__class__.__name__,obj)
+      self.game_objects.remove(obj)
+
+   def shoot(self,pos:(int,int)):
+      missile = self.pool.get_object("Missile")
+      missile.enable(*pos)
+      self.game_objects.append(missile)
+
    def genereate_lvl(self):
       self.game_objects.append(self.player)
       for i in range(0,900,50):
@@ -56,14 +63,14 @@ class Game:
    def game_loop(self):
       for obj in self.game_objects:
          obj.update()
-      self.player.move_missiles()
+      # self.player.move_missiles()
 
    def render(self):
       self._DISPLAYSURF.fill(BLACK)
       for obj in self.game_objects:
          obj.draw(self._DISPLAYSURF)
-      for obj in self.player.missiles:
-         obj.draw(self._DISPLAYSURF)
+      # for obj in self.player.missiles:
+      #    obj.draw(self._DISPLAYSURF)
       
 
    def exit(self):
