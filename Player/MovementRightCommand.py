@@ -1,4 +1,4 @@
-from Command import Command
+from Player.Command import Command
 
 class MovementRightCommand(Command):
     def __init__(self, player):

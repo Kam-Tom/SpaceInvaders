@@ -4,7 +4,7 @@ class ShipModel():
     def __init__(self,size:(int,int),base_speed:float,image_path:str):
         self.size = size
         self.base_speed = base_speed
-        self.image = pygame.image.load(image_path)
+        self.image = pygame.image.load("Sprites/"+image_path)
         self.image = pygame.transform.scale(self.image, size)
 
 class ShipModelFactory():

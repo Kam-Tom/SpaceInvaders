@@ -1,14 +1,14 @@
 from abc import ABC, abstractmethod 
 from Drawable import Drawable
 #Ships
-from Player import Player
-from Broiler import Broiler
-from Polish import Polish
-from Leghorn import Leghorn
+from Player.Player import Player
+from Ships.Broiler import Broiler
+from Ships.Polish import Polish
+from Ships.Leghorn import Leghorn
 #Missile
-from Missile import Missile
+from Player.Weapon.Missile import Missile
 
-from ShipModel import ShipModelFactory
+from Ships.ShipModel import ShipModelFactory
 
 ship_model_factory = ShipModelFactory()
 

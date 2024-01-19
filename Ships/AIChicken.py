@@ -1,4 +1,4 @@
-from Ship import Ship
+from Ships.Ship import Ship
 
 class AIChicken(Ship):
     def move(self):

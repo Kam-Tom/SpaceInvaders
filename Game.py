@@ -2,11 +2,9 @@ import pygame, sys
 from pygame.locals import *
 from Pool import Pool
 from factories import *
-from Player import Player
-from Polish import Polish
-from Broiler import Broiler
-from Leghorn import Leghorn
-from Missile import Missile
+from Player.Player import Player
+from Ships.Broiler import Broiler
+from Player.Weapon.Missile import Missile
 from GameInputHandler import GameInputHandler
 # Predefined some colors
 BLUE  = (0, 0, 255)

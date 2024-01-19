@@ -1,11 +1,11 @@
 import pygame
-from AIChicken import AIChicken
-from ShipModel import ShipModelFactory
+from Ships.AIChicken import AIChicken
+from Ships.ShipModel import ShipModelFactory
 import random
 class Broiler(AIChicken):
     
     def __init__(self,ship_model_factory:ShipModelFactory):
-        self.ship_model = ship_model_factory.get_ship_type((10,50),50,"Leghorn.jpg")
+        self.ship_model = ship_model_factory.get_ship_type((10,50),50,"leghorn.jpg")
         self.rect = self.ship_model.image.get_rect()
         self.rect.center=(0,0) 
 

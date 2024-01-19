@@ -1,6 +1,6 @@
-from Ship import Ship
-from ShipModel import ShipModelFactory
-from Missile import Missile
+from Ships.Ship import Ship
+from Ships.ShipModel import ShipModelFactory
+from Player.Weapon.Missile import Missile
 
 class Player(Ship):
     def __init__(self,ship_model_factory:ShipModelFactory,on_shoot):

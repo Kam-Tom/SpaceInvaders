@@ -1,8 +1,8 @@
 import pygame
 
-from MovementLeftCommand import MovementLeftCommand
-from MovementRightCommand import MovementRightCommand
-from ShootCommand import ShootCommand
+from Player.MovementLeftCommand import MovementLeftCommand
+from Player.MovementRightCommand import MovementRightCommand
+from Player.ShootCommand import ShootCommand
 
 class GameInputHandler:
     def __init__(self, player):
