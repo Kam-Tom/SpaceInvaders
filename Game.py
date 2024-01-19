@@ -45,7 +45,7 @@ class Game:
 
    def shoot(self,pos:(int,int)):
       missile = self.pool.get_object("Missile")
-      missile.enable(*pos)
+      missile.enable(*pos, 1)
       self.game_objects.append(missile)
 
    def genereate_lvl(self):
@@ -62,7 +62,10 @@ class Game:
 
    def game_loop(self):
       for obj in self.game_objects:
-         obj.update()
+         if isinstance(obj, Broiler):
+            obj.update(self.game_objects)
+         else:
+            obj.update()
       # self.player.move_missiles()
 
    def render(self):
