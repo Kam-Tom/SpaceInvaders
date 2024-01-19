@@ -7,7 +7,7 @@ class Drawable(pygame.sprite.Sprite,ABC):
         pass
 
     @abstractmethod
-    def enable(self,x,y):
+    def enable(self,x:int,y:int):
         pass
 
     @abstractmethod

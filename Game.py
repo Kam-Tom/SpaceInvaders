@@ -63,14 +63,12 @@ class Game:
    def game_loop(self):
       for obj in self.game_objects:
          obj.update()
-      # self.player.move_missiles()
 
    def render(self):
       self._DISPLAYSURF.fill(BLACK)
       for obj in self.game_objects:
          obj.draw(self._DISPLAYSURF)
-      # for obj in self.player.missiles:
-      #    obj.draw(self._DISPLAYSURF)
+
       
 
    def exit(self):
