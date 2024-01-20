@@ -7,6 +7,8 @@ from Ships.ShipModel import ShipModelFactory
 from Player.Weapon.Missile import Missile
 from Player.Weapon.WeaponStates import LoadedWeapon
 
+from constants import SCREEN_HEIGHT,SCREEN_WIDTH,BORDER
+
 class Broiler(AIChicken):
     
     def __init__(self,ship_model_factory:ShipModelFactory, shoot_callback,drop_callback,disable_callback):

@@ -1,7 +1,7 @@
 
 #Screen size
-SCREEN_WIDTH = 1200
-SCREEN_HEIGHT = 800
+SCREEN_WIDTH = 1600
+SCREEN_HEIGHT = 900
 BORDER = 20
 # Predefined some colors
 BLUE  = (0, 0, 255)

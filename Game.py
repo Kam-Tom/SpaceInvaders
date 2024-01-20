@@ -60,7 +60,7 @@ class Game:
 
    def generate_lvl(self):
 
-      self.player.enable(400, 550)
+      self.player.enable(800, 850)
 
       self.game_objects.append(self.player)
       # for i in range(0,800,300): 

@@ -39,7 +39,7 @@ class Player(Ship):
             self.rect.center=(self.x,self.y) 
 
     def moveRight(self):
-        if self.x < 800 - self.width // 2:
+        if self.x < 1600 - self.width // 2:
             self.x += self.velocity
             self.rect.center=(self.x,self.y) 
 
@@ -57,7 +57,7 @@ class Player(Ship):
     def draw_ammo_bar(self, screen):
         for i in range(self.ammo):
             ammo_rect = self.ammo_bar_piece.get_rect()
-            ammo_rect.bottomleft = (25 * i, 600)
+            ammo_rect.bottomleft = (25 * i, 900)
             screen.blit(self.ammo_bar_piece, ammo_rect)
 
     def save(self):
