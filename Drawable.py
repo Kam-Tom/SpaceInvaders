@@ -17,3 +17,7 @@ class Drawable(pygame.sprite.Sprite,ABC):
     @abstractmethod
     def draw(self, surface):
         pass
+
+    @abstractmethod
+    def check_colision(self,obj):
+        pass

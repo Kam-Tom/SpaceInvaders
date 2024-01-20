@@ -7,3 +7,6 @@ class Ship(Drawable):
     def draw(self, surface):
         surface.blit(self.ship_model.image, self.rect)
 
+    def check_colision(self, obj):
+        pass
+

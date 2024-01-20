@@ -64,7 +64,7 @@ class Broiler(AIChicken):
         self.x = x
         self.y = y
 
-    def update(self, chickens):
+    def update(self):
         super().update()
         self.x += self.random_float
         self.rect.center=(self.x,self.y) 
@@ -78,7 +78,3 @@ class Broiler(AIChicken):
             self.y = random.randint(0, 312)
         if self.y < 0:
             self.random_float = abs(self.random_float)
-        for chicken in chickens:
-            if self != chicken and pygame.sprite.collide_rect(self, chicken):
-                self.random_float = -self.random_float
-                break

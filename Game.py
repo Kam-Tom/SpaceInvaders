@@ -33,6 +33,7 @@ class Game:
       self.pool.register_category(Polish.__name__,PolishFactory(),10)
       self.pool.register_category(Missile.__name__,MissileFactory(self.destroy_object),100)
       
+      self.player = self.pool.get_object("Player")
       #set Input handler
       self.input_handler = GameInputHandler(self.player)
 
@@ -48,8 +49,8 @@ class Game:
       self.game_objects.append(missile)
 
 
-   def generate_lvl_1(self):
-      self.player = self.pool.get_object("Player")
+   def generate_lvl(self):
+
       self.player.enable(400, 550)
 
       self.game_objects.append(self.player)
@@ -78,9 +79,9 @@ class Game:
       for obj in self.game_objects:
          obj.update()
       #check check_colisions
-      for obj1 in range(len(self.game_objects)):
-         for obj2 in range(len(self.game_objects)):
-            obj1.check_colision(obj2)
+      for i in range(len(self.game_objects)):
+         for j in range(i+1,len(self.game_objects)):
+            self.game_objects[i].check_colision(self.game_objects[j])
       
    def render(self):
       self._DISPLAYSURF.fill(BLACK)

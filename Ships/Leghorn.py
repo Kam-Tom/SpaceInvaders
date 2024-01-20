@@ -23,7 +23,7 @@ class Leghorn(AIChicken):
         self.x = x
         self.y = y
 
-    def update(self, chickens):
+    def update(self):
         self.y += self.random_float
         self.rect.center=(self.x,self.y) 
         if self.x > 825:
@@ -34,10 +34,7 @@ class Leghorn(AIChicken):
             self.x = 825
         if self.y < 0:
             self.random_float = abs(self.random_float)
-        for chicken in chickens:
-            if self != chicken and pygame.sprite.collide_rect(self, chicken):
-                self.random_float = -self.random_float
-                break
+
 
     def hit(self):
         self.life -= 1

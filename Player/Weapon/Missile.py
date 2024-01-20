@@ -35,3 +35,6 @@ class Missile(Drawable):
     def over_screen(self):
         return not (self.y > 0 and self.y < 600)
     
+    def check_colision(self, obj):
+        pass
+    
