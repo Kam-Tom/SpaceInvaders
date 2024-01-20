@@ -1,13 +1,8 @@
 import pygame
 import random
-
 from Enemy.AIChicken import AIChicken
 from Ships.ShipModel import ShipModelFactory
 
-from Player.Weapon.Missile import Missile
-from Player.Weapon.WeaponStates import LoadedWeapon
-
-from constants import SCREEN_HEIGHT,SCREEN_WIDTH,BORDER
 
 class Broiler(AIChicken):
     
@@ -53,3 +48,7 @@ class Broiler(AIChicken):
             return
         if random.random() < self.shoot_change:
             self.shoot()
+
+            
+    def hp_reset(self):
+        self.life = 3

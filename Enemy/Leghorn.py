@@ -3,7 +3,6 @@ import random
 from Enemy.AIChicken import AIChicken
 from Ships.ShipModel import ShipModelFactory
 
-from constants import SCREEN_HEIGHT,SCREEN_WIDTH,BORDER
 
 
 class Leghorn(AIChicken):
@@ -12,35 +11,45 @@ class Leghorn(AIChicken):
         super().__init__(shoot_callback,drop_callback,disable_callback)
         self.ship_model = ship_model_factory.get_ship_type((50,50),(0.1,0.01),"Leghorn.jpg")
         self.rect = self.ship_model.image.get_rect()
+        self.rect.center=(0,0)
 
-        self.rect.center=(0,0) 
+        self.shoot_change = 0.01
+
         self.life = 3
-        self.shoot_chance = 0.1
 
-    def disable(self):
-        self.on_disable(self)
-
-    def enable(self, x, y):
-        self.rect.center=(x,y) 
-        self.x = x
-        self.y = y
-        self.direction = 1
-
-    def update(self):
-        if random.random() > self.shoot_chance:
-            self.shoot()
-
-        self.y += self.random_float
-        self.rect.center=(self.x,self.y) 
-        if self.y >= SCREEN_HEIGHT / 2 or self.y <= 0:
-            self.direction *= -1
-
+        self.hp_images = {
+            3: pygame.transform.scale(pygame.image.load('Sprites/hp3on3.png'), (50, 10)),
+            2: pygame.transform.scale(pygame.image.load('Sprites/hp2on3.png'), (50, 10)),
+            1: pygame.transform.scale(pygame.image.load('Sprites/hp1on3.png'), (50, 10))
+        }
+        self.hp_image = self.hp_images[self.life]
 
     def hit(self):
         self.life -= 1
         if self.life <= 0:
             self.disable()
+        else:
+            self.hp_image = self.hp_images[self.life]
+    
+    def enable(self, x, y):
+        super().enable(x, y)
+        self.life = 3
+        self.hp_image = self.hp_images[self.life]
 
+
+    def draw(self, screen):
+        screen.blit(self.ship_model.image, self.rect)
+        hp_rect = self.hp_image.get_rect()
+        hp_rect.center = (self.rect.centerx, self.rect.centery - self.rect.height // 2 - hp_rect.height // 2)
+        screen.blit(self.hp_image, hp_rect)
+
+    def update(self):
+        super().update()
+        if self.in_position == False:
+            return
+        if random.random() < self.shoot_change:
+            self.shoot()
+            
     def hp_reset(self):
         self.life = 3
 

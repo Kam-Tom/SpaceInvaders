@@ -2,19 +2,20 @@ from Ships.Ship import Ship
 from Player.Weapon.Missile import Missile
 from constants import SCREEN_HEIGHT,SCREEN_WIDTH,BORDER,MOVE_TO_START_SPEED
 import pygame
+import random
 
 class AIChicken(Ship):
     def __init__(self,shoot_callback,drop_callback,disable_callback):
         super().__init__(shoot_callback,disable_callback)
         self.on_drop = drop_callback
-        self.drop_chance = 0
+        self.drop_chance = 0.5
         self.dir = (1,1)
 
     def shoot(self):
         self.on_shoot(self.pos)
 
     def drop(self):
-        self.on_drop()
+        self.on_drop(self.pos)
 
     def draw(self, surface):
         super().draw(surface)
@@ -65,3 +66,8 @@ class AIChicken(Ship):
             self.dir = (1,1)
         if self.pos[1] >= SCREEN_HEIGHT * 0.70:
             self.dir = (self.dir[0],0)
+
+    def disable(self):
+        super().disable()
+        if random.random() < self.drop_chance:
+            self.drop()

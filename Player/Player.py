@@ -4,9 +4,10 @@ from Ships.ShipModel import ShipModelFactory
 from Player.Weapon.Missile import Missile
 from Player.Weapon.WeaponStates import LoadedWeapon
 from Enemy.Egg import Egg
+from Enemy.Drop import Drop
 
 class Player(Ship):
-    def __init__(self,ship_model_factory:ShipModelFactory,shoot_callback,disable_callback):
+    def __init__(self,ship_model_factory:ShipModelFactory,shoot_callback,disable_callback,collect_callback):
         super().__init__(shoot_callback,disable_callback)
 
         self.width = 64
@@ -17,6 +18,7 @@ class Player(Ship):
         self.velocity = 5
         self.missiles = []
         self.on_shoot = shoot_callback
+        self.on_collect = collect_callback
         self.ammo = 10
         self.state = None
         self.change_weapon_state(LoadedWeapon())
@@ -44,8 +46,7 @@ class Player(Ship):
             self.rect.center=(self.x,self.y) 
 
     def shoot(self):
-        # self.on_shoot((self.x-1,self.y-40), 1)
-        self.state.shoot(1)
+        self.state.shoot()
 
     def reload(self):
         self.ammo = 10
@@ -68,4 +69,8 @@ class Player(Ship):
 
     def check_colision(self, obj):
         if self.rect.colliderect(obj.rect) and isinstance(obj,Egg):
+            print("HP -1")
+            obj.disable()
+        if self.rect.colliderect(obj.rect) and isinstance(obj,Drop):
+            self.on_collect()
             obj.disable()

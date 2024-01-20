@@ -27,12 +27,13 @@ class Game:
       #set Object Pool
       self.game_objects = []
       self.pool = Pool()
-      self.pool.register_category(Player.__name__,PlayerFactory(self.shoot,self.destroy_object),1)
+      self.pool.register_category(Player.__name__,PlayerFactory(self.shoot,self.destroy_object,self.collect),1)
       self.pool.register_category(Broiler.__name__,BroilerFactory(self.enemy_shoot,self.destroy_object,self.drop),10)
       self.pool.register_category(Leghorn.__name__,LeghornFactory(self.enemy_shoot,self.destroy_object,self.drop),10)
       self.pool.register_category(Polish.__name__,PolishFactory(self.enemy_shoot,self.destroy_object,self.drop),10)
       self.pool.register_category(Missile.__name__,MissileFactory(self.destroy_object),100)
       self.pool.register_category(Egg.__name__,EggFactory(self.destroy_object),100)
+      self.pool.register_category(Drop.__name__,DropFactory(self.destroy_object),100)
       
       self.player = self.pool.get_object("Player")
       #set Input handler
@@ -40,6 +41,9 @@ class Game:
       self.to_destroy = []
 
       self.level = 1
+
+   def collect(self):
+      print("Money +1")
    
    def destroy_object(self,obj):
       #queue object
@@ -50,33 +54,37 @@ class Game:
       egg.enable(*pos)
       self.game_objects.append(egg)
 
-   def shoot(self, pos:(int,int), direction:int):
+   def shoot(self, pos:(int,int)):
       missile = self.pool.get_object("Missile")
-      missile.enable(*pos, direction)
+      missile.enable(*pos)
       self.game_objects.append(missile)
    
-   def drop(self):
-      pass
+   def drop(self, pos:(int,int)):
+      drop = self.pool.get_object(Drop.__name__)
+      drop.enable(*pos)
+      self.game_objects.append(drop)
 
    def generate_lvl(self):
 
       self.player.enable(800, 850)
 
       self.game_objects.append(self.player)
-      # for i in range(0,800,300): 
-      #    ship = self.pool.get_object("Broiler")
-      #    ship.hp_reset()
-      #    ship.enable(i,70)
-      #    self.game_objects.append(ship)
-      # for i in range(100,800,100):
-      #    ship = self.pool.get_object("Leghorn")
-      #    ship.hp_reset()
-      #    ship.enable(i,120)
-      #    self.game_objects.append(ship)
+
+      for i in range(0,800,300): 
+         ship = self.pool.get_object(Polish.__name__)
+         ship.hp_reset()
+         ship.enable(i,70)
+         self.game_objects.append(ship)
+      for i in range(100,800,100):
+         ship = self.pool.get_object(Leghorn.__name__)
+         ship.hp_reset()
+         ship.enable(i,120)
+         self.game_objects.append(ship)
 
       for i in range(100,600,300):
          ship = self.pool.get_object(Broiler.__name__)
          ship.enable(i,i + 20)
+         ship.hp_reset()
          self.game_objects.append(ship)
 
 
