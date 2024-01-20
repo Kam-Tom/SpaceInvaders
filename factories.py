@@ -24,12 +24,16 @@ class PlayerFactory(DrawableFactory):
         return Player(ship_model_factory,self.on_shoot)
 
 class BroilerFactory(DrawableFactory):
+    def __init__(self,on_shoot) -> None:
+        self.on_shoot = on_shoot
     def create(self) -> Drawable:
-        return Broiler(ship_model_factory)
+        return Broiler(ship_model_factory, self.on_shoot)
     
 class LeghornFactory(DrawableFactory):
+    def __init__(self,on_disable) -> None:
+        self.on_disable = on_disable
     def create(self) -> Drawable:
-        return Leghorn(ship_model_factory)
+        return Leghorn(ship_model_factory,self.on_disable)
     
 class PolishFactory(DrawableFactory):
     def create(self) -> Drawable:

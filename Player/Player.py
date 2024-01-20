@@ -1,6 +1,8 @@
+import pygame
 from Ships.Ship import Ship
 from Ships.ShipModel import ShipModelFactory
 from Player.Weapon.Missile import Missile
+from Player.Weapon.WeaponStates import LoadedWeapon
 
 class Player(Ship):
     def __init__(self,ship_model_factory:ShipModelFactory,on_shoot):
@@ -12,6 +14,10 @@ class Player(Ship):
         self.velocity = 5
         self.missiles = []
         self.on_shoot = on_shoot
+        self.ammo = 10
+        self.state = None
+        self.change_weapon_state(LoadedWeapon())
+        self.ammo_bar_piece = pygame.transform.scale(pygame.image.load('Sprites/ammo.png'), (10, 20))
 
     def enable(self, x, y):
         self.rect.center=(x,y) 
@@ -35,7 +41,21 @@ class Player(Ship):
             self.rect.center=(self.x,self.y) 
 
     def shoot(self):
-        self.on_shoot((self.x-1,self.y-40))
+        # self.on_shoot((self.x-1,self.y-40), 1)
+        self.state.shoot(1)
+
+    def reload(self):
+        self.ammo = 10
+
+    def change_weapon_state(self, state):
+        self.state = state
+        self.state.set_context(self)
+
+    def draw_ammo_bar(self, screen):
+        for i in range(self.ammo):
+            ammo_rect = self.ammo_bar_piece.get_rect()
+            ammo_rect.bottomleft = (25 * i, 600)
+            screen.blit(self.ammo_bar_piece, ammo_rect)
 
     def save(self):
         pass
