@@ -51,22 +51,22 @@ class Game:
 
    def generate_lvl(self):
 
-      self.player.enable(400, 550)
+      self.player.enable(800, 850)
 
       self.game_objects.append(self.player)
-      for i in range(0,800,300):
+      for i in range(0,1600,400):
          ship = self.pool.get_object("Broiler")
          ship.hp_reset()
-         ship.enable(i,70)
+         ship.enable(i,280)
          self.game_objects.append(ship)
-      for i in range(100,800,100):
+      for i in range(200,1600,400):
          ship = self.pool.get_object("Leghorn")
          ship.hp_reset()
-         ship.enable(i,120)
+         ship.enable(i,225)
          self.game_objects.append(ship)
-      for i in range(100,600,300):
+      for i in range(200,1600,400):
          ship = self.pool.get_object("Polish")
-         ship.enable(i,i + 20)
+         ship.enable(i, 20)
          self.game_objects.append(ship)
 
 

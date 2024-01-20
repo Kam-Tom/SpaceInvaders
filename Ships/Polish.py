@@ -3,6 +3,7 @@ import random
 
 from Ships.AIChicken import AIChicken
 from Ships.ShipModel import ShipModelFactory
+
 from constants import SCREEN_HEIGHT,SCREEN_WIDTH,BORDER
 
 class Polish(AIChicken):
@@ -16,34 +17,23 @@ class Polish(AIChicken):
         self.init_hp = 1
 
     def enable(self,x,y):
-        #start from over screen
-        self.rect.center=(SCREEN_WIDTH/2,-SCREEN_HEIGHT) 
-        #set destination point
-        self.destination = (x,y)
-        self.pos = (SCREEN_WIDTH/2,-SCREEN_HEIGHT)
+        self.rect.center=(x, 0) 
+        self.pos = (x, 0)
         self.x = x
-        self.y = y
+        self.y = 0
+        self.speed = 3
+        self.direction = 1
 
     def disable(self):
         #play 
         pass
 
     def update(self):
-        
+        self.x += self.speed * self.direction
+        self.y += self.speed * self.direction
         self.rect.center=(self.x,self.y)
-
-        if self.x >= SCREEN_WIDTH - BORDER:
-            self.pos
-        if self.x <= BORDER:
-            self.x = 0
-            self.y += 50
-        if self.y >= 450:
-            self.x = 0
-            self.y = 70
+        if self.y >= SCREEN_HEIGHT / 2 or self.y <= 0 or self.x >= SCREEN_WIDTH / 2 or self.x <= 0:
+            self.direction *= -1
 
     def check_colision(self,obj):
         pass
-    
-    
-    
-    

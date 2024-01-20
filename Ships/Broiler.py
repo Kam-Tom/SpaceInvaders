@@ -7,6 +7,8 @@ from Ships.ShipModel import ShipModelFactory
 from Player.Weapon.Missile import Missile
 from Player.Weapon.WeaponStates import LoadedWeapon
 
+from constants import SCREEN_HEIGHT,SCREEN_WIDTH,BORDER
+
 class Broiler(AIChicken):
     
     def __init__(self,ship_model_factory:ShipModelFactory, on_shoot):
@@ -59,7 +61,7 @@ class Broiler(AIChicken):
         pass
     
     def enable(self, x, y):
-        self.rect.center=(x,y) 
+        self.rect.center=(x, 0) 
         self.random_float = (2*random.random() - 1) + 0.1
         self.x = x
         self.y = y
@@ -68,13 +70,5 @@ class Broiler(AIChicken):
         super().update()
         self.x += self.random_float
         self.rect.center=(self.x,self.y) 
-        if self.x > 775:
+        if self.y >= SCREEN_HEIGHT / 2 or self.y <= 0:
             self.random_float = -abs(self.random_float)
-        if self.y > 312:
-            self.random_float = -abs(self.random_float)
-        if self.x < 25:
-            self.random_float = abs(self.random_float)
-        if self.y < -25:
-            self.y = random.randint(0, 312)
-        if self.y < 0:
-            self.random_float = abs(self.random_float)

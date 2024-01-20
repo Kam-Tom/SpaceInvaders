@@ -3,6 +3,8 @@ import random
 from Ships.AIChicken import AIChicken
 from Ships.ShipModel import ShipModelFactory
 
+from constants import SCREEN_HEIGHT,SCREEN_WIDTH,BORDER
+
 
 class Leghorn(AIChicken):
     
@@ -18,22 +20,17 @@ class Leghorn(AIChicken):
         self.on_disable(self)
 
     def enable(self, x, y):
-        self.rect.center=(x,y) 
+        self.rect.center=(x, 0) 
         self.random_float = abs(2*random.random() - 1)
         self.x = x
         self.y = y
+        self.direction = 1
 
     def update(self):
-        self.y += self.random_float
+        self.y += self.random_float * self.direction  # Multiply by direction
         self.rect.center=(self.x,self.y) 
-        if self.x > 825:
-            self.x = -25
-        if self.y > 625:
-            self.disable()
-        if self.x < -25:
-            self.x = 825
-        if self.y < 0:
-            self.random_float = abs(self.random_float)
+        if self.y >= SCREEN_HEIGHT / 2 or self.y <= 0:
+            self.direction *= -1
 
 
     def hit(self):
