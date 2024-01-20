@@ -1,6 +1,6 @@
 import pygame
 import random
-
+import math
 from Enemy.AIChicken import AIChicken
 from Ships.ShipModel import ShipModelFactory
 
@@ -13,6 +13,7 @@ class Polish(AIChicken):
         self.rect = self.ship_model.image.get_rect()
         self.rect.center=(0,0) 
         self.dir = (1,1)
+        self.shoot_change = 0.01
 
 
     # def enable(self,x,y):
@@ -36,22 +37,8 @@ class Polish(AIChicken):
     #     self.pos = (self.pos[0]+difference[0],self.pos[1]+difference[1])
     #     self.rect.center = self.pos
 
-    # def update(self):
-        
-    #     if self.in_position == False:
-    #         self.move_to_start()
-    #         return
 
-    #     self.pos = (self.pos[0] + self.ship_model.base_speed[0] * self.dir[0],self.pos[1] +self.ship_model.base_speed[1] * self.dir[1])
 
-    #     self.rect.center = self.pos
-
-    #     if self.pos[0] >= SCREEN_WIDTH - BORDER:
-    #         self.dir = (-1,1)
-    #     if self.pos[0] <= BORDER:
-    #         self.dir = (1,1)
-    #     if self.pos[1] >= SCREEN_HEIGHT * 0.70:
-    #         self.dir = (self.dir[0],0)
 
         
 

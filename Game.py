@@ -6,7 +6,7 @@ from Pool import Pool
 from factories import *
 from Player.Player import Player
 from Enemy.Broiler import Broiler
-from Enemy.AIChicken import AIChicken
+from Enemy.Egg import Egg
 from Player.Weapon.Missile import Missile
 from GameInputHandler import GameInputHandler
 from constants import *
@@ -28,10 +28,11 @@ class Game:
       self.game_objects = []
       self.pool = Pool()
       self.pool.register_category(Player.__name__,PlayerFactory(self.shoot,self.destroy_object),1)
-      self.pool.register_category(Broiler.__name__,BroilerFactory(self.shoot,self.destroy_object,self.drop),10)
-      self.pool.register_category(Leghorn.__name__,LeghornFactory(self.shoot,self.destroy_object,self.drop),10)
-      self.pool.register_category(Polish.__name__,PolishFactory(self.shoot,self.destroy_object,self.drop),10)
+      self.pool.register_category(Broiler.__name__,BroilerFactory(self.enemy_shoot,self.destroy_object,self.drop),10)
+      self.pool.register_category(Leghorn.__name__,LeghornFactory(self.enemy_shoot,self.destroy_object,self.drop),10)
+      self.pool.register_category(Polish.__name__,PolishFactory(self.enemy_shoot,self.destroy_object,self.drop),10)
       self.pool.register_category(Missile.__name__,MissileFactory(self.destroy_object),100)
+      self.pool.register_category(Egg.__name__,EggFactory(self.destroy_object),100)
       
       self.player = self.pool.get_object("Player")
       #set Input handler
@@ -44,6 +45,10 @@ class Game:
       #queue object
       self.to_destroy.append(obj)
 
+   def enemy_shoot(self, pos:(int,int)):
+      egg = self.pool.get_object(Egg.__name__)
+      egg.enable(*pos)
+      self.game_objects.append(egg)
 
    def shoot(self, pos:(int,int), direction:int):
       missile = self.pool.get_object("Missile")

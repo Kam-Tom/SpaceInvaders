@@ -15,6 +15,8 @@ class Broiler(AIChicken):
         self.rect = self.ship_model.image.get_rect()
         self.rect.center=(0,0)
 
+        self.shoot_change = 0.01
+
         self.life = 3
 
         self.hp_images = {
@@ -43,3 +45,9 @@ class Broiler(AIChicken):
         hp_rect.center = (self.rect.centerx, self.rect.centery - self.rect.height // 2 - hp_rect.height // 2)
         screen.blit(self.hp_image, hp_rect)
 
+    def update(self):
+        super().update()
+        if self.in_position == False:
+            return
+        if random.random() < self.shoot_change:
+            self.shoot()

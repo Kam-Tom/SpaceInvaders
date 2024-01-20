@@ -5,6 +5,7 @@ from Player.Player import Player
 from Enemy.Broiler import Broiler
 from Enemy.Polish import Polish
 from Enemy.Leghorn import Leghorn
+from Enemy.Egg import Egg
 #Missile
 from Player.Weapon.Missile import Missile
 
@@ -53,3 +54,9 @@ class MissileFactory(DrawableFactory):
         self.on_disable = disable_callback
     def create(self) -> Drawable:
         return Missile((5, 10), "missile_blue.png",self.on_disable)
+    
+class EggFactory(DrawableFactory):
+    def __init__(self,disable_callback) -> None:
+        self.on_disable = disable_callback
+    def create(self) -> Drawable:
+        return Egg((12, 16), "egg.png",self.on_disable)

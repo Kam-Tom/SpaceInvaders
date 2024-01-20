@@ -42,8 +42,7 @@ class Leghorn(AIChicken):
     def hit(self):
         self.life -= 1
         if self.life <= 0:
-            pass
-            # self.disable()
+            self.disable()
 
     def hp_reset(self):
         self.life = 3

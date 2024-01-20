@@ -11,7 +11,7 @@ class AIChicken(Ship):
         self.dir = (1,1)
 
     def shoot(self):
-        self.on_shoot()
+        self.on_shoot(self.pos)
 
     def drop(self):
         self.on_drop()
