@@ -9,30 +9,22 @@ from Ships.Broiler import Broiler
 from Ships.AIChicken import AIChicken
 from Player.Weapon.Missile import Missile
 from GameInputHandler import GameInputHandler
+from constants import *
 
-# Predefined some colors
-BLUE  = (0, 0, 255)
-RED   = (255, 0, 0)
-GREEN = (0, 255, 0)
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
 
 class Game:
    def __init__(self):
       pygame.init()
       self._FPS = 60
       self._FramePerSec = pygame.time.Clock()
-      self.last_shot_time = 0
-
-      # Screen information
-      SCREEN_WIDTH = 800
-      SCREEN_HEIGHT = 600
 
       #set background
       self._DISPLAYSURF = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
       self._DISPLAYSURF.fill(BLACK)
       pygame.display.set_caption("Space Invaders")
+      self.font = pygame.font.SysFont('comicsans', 20)
 
+      #set Object Pool
       self.game_objects = []
       self.pool = Pool()
       self.pool.register_category(Player.__name__,PlayerFactory(self.shoot),1)
@@ -40,11 +32,11 @@ class Game:
       self.pool.register_category(Leghorn.__name__,LeghornFactory(self.destroy_object),10)
       self.pool.register_category(Polish.__name__,PolishFactory(),10)
       self.pool.register_category(Missile.__name__,MissileFactory(self.destroy_object),100)
-      self.player = self.pool.get_object("Player")
-      self.player.enable(400, 550)
+      
+      #set Input handler
       self.input_handler = GameInputHandler(self.player)
-      self.level = 0
-      self.font = pygame.font.SysFont('comicsans', 20)
+
+      self.level = 1
    
    def destroy_object(self,obj):
       self.pool.return_object(obj.__class__.__name__,obj)
@@ -55,9 +47,12 @@ class Game:
       missile.enable(*pos, direction)
       self.game_objects.append(missile)
 
-   def generate_lvl(self):
-      self.level += 1
-      if self.level == 1: self.game_objects.append(self.player)
+
+   def generate_lvl_1(self):
+      self.player = self.pool.get_object("Player")
+      self.player.enable(400, 550)
+
+      self.game_objects.append(self.player)
       for i in range(0,800,300):
          ship = self.pool.get_object("Broiler")
          ship.hp_reset()
@@ -79,21 +74,14 @@ class Game:
          self.exit()
 
    def game_loop(self):
+      #update
       for obj in self.game_objects:
-         if isinstance(obj, AIChicken):
-            obj.update(self.game_objects)
-         else:
-            obj.update()
-      # self.player.move_missiles()
-      for obj1 in self.game_objects:
-         for obj2 in self.game_objects:
-            if isinstance(obj1, Missile) and isinstance(obj2, AIChicken) and obj1.rect.colliderect(obj2.rect):
-               obj2.hit()
-               self.destroy_object(obj1)
-               if obj2.life <= 0:
-                  self.destroy_object(obj2)
-               break
-
+         obj.update()
+      #check check_colisions
+      for obj1 in range(len(self.game_objects)):
+         for obj2 in range(len(self.game_objects)):
+            obj1.check_colision(obj2)
+      
    def render(self):
       self._DISPLAYSURF.fill(BLACK)
       self._DISPLAYSURF.blit(self.font.render(f"Level: {self.level}", 1, (255,255,255)), (10, 0))
