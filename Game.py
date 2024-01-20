@@ -6,6 +6,7 @@ from Player.Player import Player
 from Ships.Broiler import Broiler
 from Player.Weapon.Missile import Missile
 from GameInputHandler import GameInputHandler
+import time
 # Predefined some colors
 BLUE  = (0, 0, 255)
 RED   = (255, 0, 0)
@@ -18,6 +19,7 @@ class Game:
       pygame.init()
       self._FPS = 60
       self._FramePerSec = pygame.time.Clock()
+      self.last_shot_time = 0
 
       # Screen information
       SCREEN_WIDTH = 800
@@ -41,10 +43,13 @@ class Game:
       self.pool.return_object(obj.__class__.__name__,obj)
       self.game_objects.remove(obj)
 
-   def shoot(self,pos:(int,int)):
-      missile = self.pool.get_object("Missile")
-      missile.enable(*pos, 1)
-      self.game_objects.append(missile)
+   def shoot(self, pos:(int,int)):
+      current_time = time.time()
+      if current_time - self.last_shot_time >= 1:
+         missile = self.pool.get_object("Missile")
+         missile.enable(*pos, 1)
+         self.game_objects.append(missile)
+         self.last_shot_time = current_time
 
    def genereate_lvl(self):
       self.game_objects.append(self.player)
@@ -65,6 +70,14 @@ class Game:
          else:
             obj.update()
       # self.player.move_missiles()
+      for obj1 in self.game_objects:
+         for obj2 in self.game_objects:
+            if isinstance(obj1, Missile) and isinstance(obj2, Broiler) and obj1.rect.colliderect(obj2.rect):
+               obj2.hit()
+               self.destroy_object(obj1)
+               if obj2.life <= 0:
+                  self.destroy_object(obj2)
+               break
 
    def render(self):
       self._DISPLAYSURF.fill(BLACK)

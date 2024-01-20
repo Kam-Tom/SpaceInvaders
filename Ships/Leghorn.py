@@ -10,14 +10,17 @@ class Leghorn(AIChicken):
         self.ship_model = ship_model_factory.get_ship_type((50,50),50,"leghorn.jpg")
         self.rect = self.ship_model.image.get_rect()
         self.rect.center=(0,0) 
+        self.life = 3
 
     def disable(self):
         pass
+
     def enable(self, x, y):
         self.rect.center=(x,y) 
         self.random_float = 2*random.random() - 1
         self.x = x
         self.y = y
+
     def update(self):
         self.x += self.random_float
         self.y += self.random_float
@@ -30,4 +33,9 @@ class Leghorn(AIChicken):
             self.x = 825
         if self.y < -25:
             self.y = 625
+
+    def hit(self):
+        self.life -= 1
+        if self.life <= 0:
+            self.disable()
 
