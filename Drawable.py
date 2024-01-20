@@ -1,5 +1,5 @@
 import pygame
-from abc import ABC, abstractmethod 
+from abc import ABC, abstractmethod
 
 class Drawable(pygame.sprite.Sprite,ABC):
     @abstractmethod
@@ -21,3 +21,5 @@ class Drawable(pygame.sprite.Sprite,ABC):
     @abstractmethod
     def check_colision(self,obj):
         pass
+
+    

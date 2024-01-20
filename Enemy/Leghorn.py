@@ -1,29 +1,32 @@
 import pygame
 import random
-from Ships.AIChicken import AIChicken
+from Enemy.AIChicken import AIChicken
 from Ships.ShipModel import ShipModelFactory
 
 
 class Leghorn(AIChicken):
     
-    def __init__(self,ship_model_factory:ShipModelFactory, on_disable):
-        super().__init__(ship_model_factory)
-        self.ship_model = ship_model_factory.get_ship_type((50,50),50,"Leghorn.jpg")
+    def __init__(self,ship_model_factory:ShipModelFactory, shoot_callback,drop_callback,disable_callback):
+        super().__init__(shoot_callback,drop_callback,disable_callback)
+        self.ship_model = ship_model_factory.get_ship_type((50,50),(0.1,0.01),"Leghorn.jpg")
         self.rect = self.ship_model.image.get_rect()
-        self.on_disable = on_disable
+
         self.rect.center=(0,0) 
         self.life = 3
+        self.shoot_chance = 0.1
 
     def disable(self):
         self.on_disable(self)
 
     def enable(self, x, y):
         self.rect.center=(x,y) 
-        self.random_float = abs(2*random.random() - 1)
         self.x = x
         self.y = y
 
     def update(self):
+        if random.random() > self.shoot_chance:
+            self.shoot()
+
         self.y += self.random_float
         self.rect.center=(self.x,self.y) 
         if self.x > 825:

@@ -3,17 +3,20 @@ from Ships.Ship import Ship
 from Ships.ShipModel import ShipModelFactory
 from Player.Weapon.Missile import Missile
 from Player.Weapon.WeaponStates import LoadedWeapon
+from Enemy.Egg import Egg
 
 class Player(Ship):
-    def __init__(self,ship_model_factory:ShipModelFactory,on_shoot):
+    def __init__(self,ship_model_factory:ShipModelFactory,shoot_callback,disable_callback):
+        super().__init__(shoot_callback,disable_callback)
+
         self.width = 64
         self.height = 75
-        self.ship_model = ship_model_factory.get_ship_type((self.width, self.height),50,"spaceship.png")
+        self.ship_model = ship_model_factory.get_ship_type((self.width, self.height),(0.1,0),"spaceship.png")
         self.rect = self.ship_model.image.get_rect()
         self.rect.center=(0,0) 
         self.velocity = 5
         self.missiles = []
-        self.on_shoot = on_shoot
+        self.on_shoot = shoot_callback
         self.ammo = 10
         self.state = None
         self.change_weapon_state(LoadedWeapon())
@@ -62,3 +65,7 @@ class Player(Ship):
 
     def restore(self):
         pass
+
+    def check_colision(self, obj):
+        if self.rect.colliderect(obj.rect) and isinstance(obj,Egg):
+            obj.disable()

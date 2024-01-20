@@ -2,9 +2,9 @@ from abc import ABC, abstractmethod
 from Drawable import Drawable
 #Ships
 from Player.Player import Player
-from Ships.Broiler import Broiler
-from Ships.Polish import Polish
-from Ships.Leghorn import Leghorn
+from Enemy.Broiler import Broiler
+from Enemy.Polish import Polish
+from Enemy.Leghorn import Leghorn
 #Missile
 from Player.Weapon.Missile import Missile
 
@@ -18,29 +18,38 @@ class DrawableFactory(ABC):
         pass
 
 class PlayerFactory(DrawableFactory):
-    def __init__(self,on_shoot) -> None:
-        self.on_shoot = on_shoot
+    def __init__(self,shoot_callback,disable_callback) -> None:
+        self.on_shoot = shoot_callback
+        self.on_disable = disable_callback
     def create(self) -> Drawable:
-        return Player(ship_model_factory,self.on_shoot)
+        return Player(ship_model_factory,self.on_shoot,self.on_disable)
 
 class BroilerFactory(DrawableFactory):
-    def __init__(self,on_shoot) -> None:
-        self.on_shoot = on_shoot
+    def __init__(self,shoot_callback,disable_callback,drop_callback) -> None:
+        self.on_shoot = shoot_callback
+        self.on_disable = disable_callback
+        self.on_drop = drop_callback
     def create(self) -> Drawable:
-        return Broiler(ship_model_factory, self.on_shoot)
+        return Broiler(ship_model_factory, self.on_shoot,self.on_drop,self.on_disable)
     
 class LeghornFactory(DrawableFactory):
-    def __init__(self,on_disable) -> None:
-        self.on_disable = on_disable
+    def __init__(self,shoot_callback,disable_callback,drop_callback) -> None:
+        self.on_shoot = shoot_callback
+        self.on_disable = disable_callback
+        self.on_drop = drop_callback
     def create(self) -> Drawable:
-        return Leghorn(ship_model_factory,self.on_disable)
+        return Leghorn(ship_model_factory, self.on_shoot,self.on_drop,self.on_disable)
     
 class PolishFactory(DrawableFactory):
+    def __init__(self,shoot_callback,disable_callback,drop_callback) -> None:
+        self.on_shoot = shoot_callback
+        self.on_disable = disable_callback
+        self.on_drop = drop_callback
     def create(self) -> Drawable:
-        return Polish(ship_model_factory)
+        return Polish(ship_model_factory, self.on_shoot,self.on_drop,self.on_disable)
     
 class MissileFactory(DrawableFactory):
-    def __init__(self,on_disable) -> None:
-        self.on_disable = on_disable
+    def __init__(self,disable_callback) -> None:
+        self.on_disable = disable_callback
     def create(self) -> Drawable:
         return Missile((5, 10), "missile_blue.png",self.on_disable)

@@ -1,12 +1,13 @@
 from Drawable import Drawable
 
 class Ship(Drawable):
-    def __init__(self,shoot_callback):
-        pass
+    def __init__(self,shoot_callback,disable_callback):
+        self.on_shoot = shoot_callback
+        self.on_disable = disable_callback
         
     def draw(self, surface):
         surface.blit(self.ship_model.image, self.rect)
 
-    def check_colision(self, obj):
-        pass
+    def disable(self):
+        self.on_disable(self)
 
