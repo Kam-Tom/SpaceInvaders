@@ -9,12 +9,10 @@ class Polish(AIChicken):
     def __init__(self,ship_model_factory:ShipModelFactory, shoot_callback,drop_callback,disable_callback):
         super().__init__(shoot_callback,drop_callback,disable_callback)
 
-        self.ship_model = ship_model_factory.get_ship_type((50,50),(2,0.1),"Polish.jpg")
+        self.ship_model = ship_model_factory.get_ship_type((50,50),(4,0),"Polish.jpg")
         self.rect = self.ship_model.image.get_rect()
         self.rect.center=(0,0) 
         self.dir = (1,1)
-        self.shoot_change = 0.01
-
         self.shoot_change = 0.01
 
         self.life = 3
