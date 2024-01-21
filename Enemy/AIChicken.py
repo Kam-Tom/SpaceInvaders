@@ -1,7 +1,6 @@
 from Ships.Ship import Ship
 from Player.Weapon.Missile import Missile
 from Player.Weapon.Multiplier import Multiplier
-from Player.Weapon.Explosion import Explosion
 from constants import SCREEN_HEIGHT,SCREEN_WIDTH,BORDER,MOVE_TO_START_SPEED
 import pygame
 import random
@@ -26,7 +25,7 @@ class AIChicken(Ship):
         self.drop()
     
     def check_colision(self, obj):
-        if self.rect.colliderect(obj.rect) and (isinstance(obj, (Missile, Multiplier, Explosion))):
+        if self.rect.colliderect(obj.rect) and (isinstance(obj, (Missile, Multiplier))):
             obj.disable(obj)
             self.hit()
 

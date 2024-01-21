@@ -12,6 +12,7 @@ class Decorator(Drawable):
         return self._component
 
     def enable(self, x, y):
+        self.rect.center = (x, y)
         self._component.enable(x, y)
         # self.x = x
         # self.y = y
@@ -27,9 +28,9 @@ class Decorator(Drawable):
     def draw(self, surface):
         self._component.draw(surface)
 
-    def update(self):
+    def update(self, obj):
         self.rect = self._component.rect
-        self._component.update()
+        self._component.update(obj)
         # self.y -= self.velocity
         # self.rect.topleft = (self.x, self.y)
         # if self.over_screen():

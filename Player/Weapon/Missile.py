@@ -15,7 +15,7 @@ class Missile(Drawable):
         self.x = x
         self.y = y
         self.velocity = 5
-        self.rect.topleft = (x, y)
+        self.rect.center = (x, y)
 
     def disable(self, obj):
         self.on_disable(obj)
@@ -27,15 +27,18 @@ class Missile(Drawable):
         self.rect = self.image.get_rect()
         surface.blit(self.image, (self.x, self.y))
 
-    def update(self):
+    def update(self, obj):
         self.y -= self.velocity
-        self.rect.topleft = (self.x, self.y)
-        # if self.over_screen():
-        #     self.disable(self)
+        self.rect.center = (self.x, self.y)
+        if self.over_screen():
+            self.disable(obj)
 
     def over_screen(self):
         return not (self.y > 0 and self.y < SCREEN_HEIGHT)
     
     def check_colision(self, obj):
+        pass
+
+    def unpack(self):
         pass
     

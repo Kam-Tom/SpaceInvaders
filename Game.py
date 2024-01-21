@@ -9,7 +9,7 @@ from Enemy.Broiler import Broiler
 from Enemy.Egg import Egg
 from Player.Weapon.Missile import Missile
 from Player.Weapon.Multiplier import Multiplier
-from Player.Weapon.Explosion import Explosion
+from Player.Weapon.Pierce import Pierce
 from GameInputHandler import GameInputHandler
 from constants import *
 from Menu import Menu
@@ -43,7 +43,7 @@ class Game:
       self.pool.register_category(Polish.__name__,PolishFactory(self.enemy_shoot,self.destroy_object,self.drop),10)
       self.pool.register_category(Missile.__name__,MissileFactory(self.destroy_object),100)
       self.pool.register_category(Multiplier.__name__,MissileFactory(self.destroy_object),100)
-      self.pool.register_category(Explosion.__name__,MissileFactory(self.destroy_object),100)
+      self.pool.register_category(Pierce.__name__,MissileFactory(self.destroy_object),100)
       self.pool.register_category(Egg.__name__,EggFactory(self.destroy_object),100)
       self.pool.register_category(Drop.__name__,DropFactory(self.destroy_object),100)
       
@@ -72,12 +72,14 @@ class Game:
       self.game_objects.append(egg)
 
    def shoot(self, pos:(int,int)):
-      missile = self.pool.get_object("Missile")
-      if self.money > 0: # collect one coin to unlock bigger missiles
-         missile = Multiplier(missile)
-      # if self.money > 4:
-      #    missile = Explosion(missile)
+      if self.money == 0:
+         missile = self.pool.get_object("Missile")
+      if self.money >= 1: # collect one coin to unlock bigger missiles
+         missile = Multiplier(self.pool.get_object("Missile"))
+      if self.money >= 5: # collect five coin to unlock pierce missiles
+         missile = Pierce(missile)
       missile.enable(*pos)
+
       self.game_objects.append(missile)
    
    def drop(self, pos:(int,int)):
@@ -117,7 +119,10 @@ class Game:
    def game_loop(self):
       #update
       for obj in self.game_objects:
-         obj.update()
+         if isinstance(obj, (Missile, Multiplier, Pierce)):
+            obj.update(obj)
+         else:
+            obj.update()
 
       if self.player.health <= 0:
          self.game_over = True
@@ -125,7 +130,7 @@ class Game:
 
       #check check_colisions
       for i in range(len(self.game_objects)):
-         for j in range(i+1,len(self.game_objects)):
+         for j in range(len(self.game_objects)):
             #skip destroyed objects
             if self.game_objects[i] in self.to_destroy:
                continue
