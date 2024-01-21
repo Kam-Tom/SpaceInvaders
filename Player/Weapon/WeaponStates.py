@@ -18,20 +18,20 @@ class LoadedWeapon(Weapon):
 class UnloadedWeapon(Weapon):
     def __init__(self):
         super().__init__()
-        self.cooldown = 4
         self.current_time = time.time()
 
     def shoot(self):
-        if time.time() >= self.current_time + self.cooldown:
+        self.context.weapon_cooldown = 4 + self.current_time
+        if time.time() >= self.context.weapon_cooldown:
             self.context.reload()
             self.context.change_weapon_state(LoadedWeapon())
 
 class ShootingWeapon(Weapon):
     def __init__(self):
         super().__init__()
-        self.cooldown = 0.5
         self.current_time = time.time()
 
     def shoot(self):
-        if time.time() >= self.current_time + self.cooldown:
+        self.context.weapon_cooldown = 0.5 + self.current_time
+        if time.time() >= self.context.weapon_cooldown:
             self.context.change_weapon_state(LoadedWeapon())

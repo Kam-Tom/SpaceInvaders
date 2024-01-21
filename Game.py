@@ -8,6 +8,8 @@ from Player.Player import Player
 from Enemy.Broiler import Broiler
 from Enemy.Egg import Egg
 from Player.Weapon.Missile import Missile
+from Player.Weapon.Multiplier import Multiplier
+from Player.Weapon.Explosion import Explosion
 from GameInputHandler import GameInputHandler
 from constants import *
 from Menu import Menu
@@ -40,6 +42,8 @@ class Game:
       self.pool.register_category(Leghorn.__name__,LeghornFactory(self.enemy_shoot,self.destroy_object,self.drop),10)
       self.pool.register_category(Polish.__name__,PolishFactory(self.enemy_shoot,self.destroy_object,self.drop),10)
       self.pool.register_category(Missile.__name__,MissileFactory(self.destroy_object),100)
+      self.pool.register_category(Multiplier.__name__,MissileFactory(self.destroy_object),100)
+      self.pool.register_category(Explosion.__name__,MissileFactory(self.destroy_object),100)
       self.pool.register_category(Egg.__name__,EggFactory(self.destroy_object),100)
       self.pool.register_category(Drop.__name__,DropFactory(self.destroy_object),100)
       
@@ -49,12 +53,14 @@ class Game:
       self.to_destroy = []
 
       self.level = 1
+      self.money = 0
 
    def start_game(self):
       self.in_menu = False
 
    def collect(self):
       print("Money +1")
+      self.money += 1
    
    def destroy_object(self,obj):
       #queue object
@@ -67,6 +73,10 @@ class Game:
 
    def shoot(self, pos:(int,int)):
       missile = self.pool.get_object("Missile")
+      if self.money > 0: # collect one coin to unlock bigger missiles
+         missile = Multiplier(missile)
+      # if self.money > 4:
+      #    missile = Explosion(missile)
       missile.enable(*pos)
       self.game_objects.append(missile)
    
@@ -79,7 +89,8 @@ class Game:
 
       self.player.enable(800, 850)
 
-      self.game_objects.append(self.player)
+      if self.player not in self.game_objects:
+         self.game_objects.append(self.player)
 
       for i in range(0,800,300): 
          ship = self.pool.get_object(Polish.__name__)
@@ -130,7 +141,7 @@ class Game:
    def render(self):
       self._DISPLAYSURF.fill(BLACK)
       self._DISPLAYSURF.blit(self.font.render(f"Level: {self.level}", 1, (255,255,255)), (10, 0))
-      self.player.draw_ammo_bar(self._DISPLAYSURF)
+      self.player.draw_ammo_bar(self._DISPLAYSURF, self.font)
       self.player.draw_health_bar(self._DISPLAYSURF)
       for obj in self.game_objects:
          obj.draw(self._DISPLAYSURF)

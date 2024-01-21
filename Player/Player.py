@@ -1,10 +1,14 @@
 import pygame
+import time
+
 from Ships.Ship import Ship
 from Ships.ShipModel import ShipModelFactory
 from Player.Weapon.Missile import Missile
 from Player.Weapon.WeaponStates import LoadedWeapon
 from Enemy.Egg import Egg
 from Enemy.Drop import Drop
+
+from constants import SCREEN_HEIGHT
 
 class Player(Ship):
     def __init__(self,ship_model_factory:ShipModelFactory,shoot_callback,disable_callback,collect_callback):
@@ -20,6 +24,7 @@ class Player(Ship):
         self.on_shoot = shoot_callback
         self.on_collect = collect_callback
         self.ammo = 10
+        self.weapon_cooldown = 0
         self.state = None
         self.change_weapon_state(LoadedWeapon())
         self.ammo_bar_piece = pygame.transform.scale(pygame.image.load('Sprites/ammo.png'), (10, 20))
@@ -57,7 +62,8 @@ class Player(Ship):
         self.state = state
         self.state.set_context(self)
 
-    def draw_ammo_bar(self, screen):
+    def draw_ammo_bar(self, screen, font):
+        screen.blit(font.render(f"Cooldown: {max(round(self.weapon_cooldown - time.time(), 2), 0)}", 1, (255,255,255)), (0, SCREEN_HEIGHT - 30))
         for i in range(self.ammo):
             ammo_rect = self.ammo_bar_piece.get_rect()
             ammo_rect.bottomleft = (25 * i, 850)

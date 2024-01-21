@@ -17,19 +17,21 @@ class Missile(Drawable):
         self.velocity = 5
         self.rect.topleft = (x, y)
 
-    def disable(self):
-        self.on_disable(self)
+    def disable(self, obj):
+        self.on_disable(obj)
         self.x = 0
         self.y = 0
 
     def draw(self, surface):
+        self.image = pygame.transform.scale(self.image, self.size)
+        self.rect = self.image.get_rect()
         surface.blit(self.image, (self.x, self.y))
 
     def update(self):
         self.y -= self.velocity
         self.rect.topleft = (self.x, self.y)
-        if self.over_screen():
-            self.disable()
+        # if self.over_screen():
+        #     self.disable(self)
 
     def over_screen(self):
         return not (self.y > 0 and self.y < SCREEN_HEIGHT)
