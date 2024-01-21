@@ -13,7 +13,7 @@ class Polish(AIChicken):
         self.rect = self.ship_model.image.get_rect()
         self.rect.center=(0,0) 
         self.dir = (1,1)
-        self.shoot_change = 0.01
+        self.shoot_change = 0.001
 
         self.life = 3
 

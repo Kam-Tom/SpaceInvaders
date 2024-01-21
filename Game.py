@@ -20,12 +20,17 @@ class Game:
       self._FramePerSec = pygame.time.Clock()
       self.menu = Menu(self)
       self.in_menu = True
+      self.game_over = False
+      self.back_to_menu_rect = pygame.Rect(0, 0, 0, 0)
+      self.retry_rect = pygame.Rect(0, 0, 0, 0)
+      self.selected_option = 0
 
       #set background
       self._DISPLAYSURF = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
       self._DISPLAYSURF.fill(BLACK)
       pygame.display.set_caption("Space Invaders")
       self.font = pygame.font.SysFont('comicsans', 20)
+      self.game_over_font = pygame.font.SysFont('comicsans', 50)
 
       #set Object Pool
       self.game_objects = []
@@ -103,6 +108,10 @@ class Game:
       for obj in self.game_objects:
          obj.update()
 
+      if self.player.health <= 0:
+         self.game_over = True
+         self.selected_option = 0
+
       #check check_colisions
       for i in range(len(self.game_objects)):
          for j in range(i+1,len(self.game_objects)):
@@ -122,10 +131,20 @@ class Game:
       self._DISPLAYSURF.fill(BLACK)
       self._DISPLAYSURF.blit(self.font.render(f"Level: {self.level}", 1, (255,255,255)), (10, 0))
       self.player.draw_ammo_bar(self._DISPLAYSURF)
+      self.player.draw_health_bar(self._DISPLAYSURF)
       for obj in self.game_objects:
          obj.draw(self._DISPLAYSURF)
 
-      
+      if self.game_over:
+         game_over_text = self.game_over_font.render("Game Over", 1, (255,255,255))
+         retry_text = self.font.render("Retry", 1, (255,0,0) if self.selected_option == 0 else (255,255,255))
+         back_to_menu_text = self.font.render("Back to menu", 1, (255,0,0) if self.selected_option == 1 else (255,255,255))
+         game_over_rect = game_over_text.get_rect(center=(SCREEN_WIDTH/2, SCREEN_HEIGHT/2))
+         self.retry_rect = retry_text.get_rect(center=(SCREEN_WIDTH/2, SCREEN_HEIGHT/2 + 50))
+         self.back_to_menu_rect = back_to_menu_text.get_rect(center=(SCREEN_WIDTH/2, SCREEN_HEIGHT/2 + 100))
+         self._DISPLAYSURF.blit(game_over_text, game_over_rect)
+         self._DISPLAYSURF.blit(retry_text, self.retry_rect)
+         self._DISPLAYSURF.blit(back_to_menu_text, self.back_to_menu_rect)
 
    def exit(self):
       pygame.quit()
@@ -142,6 +161,43 @@ class Game:
             self.menu.update()
             self.menu.draw(self._DISPLAYSURF)
          else:
+            if self.game_over:
+               for event in pygame.event.get():
+                  if event.type == pygame.MOUSEBUTTONDOWN:
+                     mouse_pos = pygame.mouse.get_pos()
+                     if self.retry_rect.collidepoint(mouse_pos):
+                        self.game_over = False
+                        self.player.health = 5
+                        self.game_objects = []
+                        self.generate_lvl()
+                        break
+                     elif self.back_to_menu_rect.collidepoint(mouse_pos):
+                        self.in_menu = True
+                        self.game_over = False
+                        self.player.health = 5
+                        self.game_objects = []
+                        break
+                  elif event.type == pygame.KEYDOWN:
+                     if event.key == pygame.K_UP:
+                        self.selected_option = (self.selected_option - 1) % 2
+                     elif event.key == pygame.K_DOWN:
+                        self.selected_option = (self.selected_option + 1) % 2
+                     elif event.key == pygame.K_RETURN:
+                        if self.selected_option == 0:
+                           self.game_over = False
+                           self.player.health = 5
+                           self.game_objects = []
+                           self.generate_lvl()
+                        elif self.selected_option == 1:
+                           self.in_menu = True
+                           self.game_over = False
+                           self.player.health = 5
+                           self.game_objects = []
+                        break
+               self.render()
+               pygame.display.update()
+               continue
+
             if len(self.game_objects) <= 1:
                self.generate_lvl()
 

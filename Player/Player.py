@@ -23,6 +23,8 @@ class Player(Ship):
         self.state = None
         self.change_weapon_state(LoadedWeapon())
         self.ammo_bar_piece = pygame.transform.scale(pygame.image.load('Sprites/ammo.png'), (10, 20))
+        self.health = 5
+        self.heart_image = pygame.transform.scale(pygame.image.load('Sprites/heart.png'), (50, 50))
 
     def enable(self, x, y):
         self.rect.center=(x,y) 
@@ -58,8 +60,14 @@ class Player(Ship):
     def draw_ammo_bar(self, screen):
         for i in range(self.ammo):
             ammo_rect = self.ammo_bar_piece.get_rect()
-            ammo_rect.bottomleft = (25 * i, 900)
+            ammo_rect.bottomleft = (25 * i, 850)
             screen.blit(self.ammo_bar_piece, ammo_rect)
+
+    def draw_health_bar(self, screen):
+        for i in range(self.health):
+            heart_rect = self.heart_image.get_rect()
+            heart_rect.topleft = (50 * i, 775)
+            screen.blit(self.heart_image, heart_rect)
 
     def save(self):
         pass
@@ -71,6 +79,7 @@ class Player(Ship):
         if self.rect.colliderect(obj.rect) and isinstance(obj,Egg):
             print("HP -1")
             obj.disable()
+            self.health -= 1
         if self.rect.colliderect(obj.rect) and isinstance(obj,Drop):
             self.on_collect()
             obj.disable()
