@@ -10,6 +10,7 @@ from Enemy.Egg import Egg
 from Player.Weapon.Missile import Missile
 from GameInputHandler import GameInputHandler
 from constants import *
+from Menu import Menu
 
 
 class Game:
@@ -17,6 +18,8 @@ class Game:
       pygame.init()
       self._FPS = 60
       self._FramePerSec = pygame.time.Clock()
+      self.menu = Menu(self)
+      self.in_menu = True
 
       #set background
       self._DISPLAYSURF = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
@@ -41,6 +44,9 @@ class Game:
       self.to_destroy = []
 
       self.level = 1
+
+   def start_game(self):
+      self.in_menu = False
 
    def collect(self):
       print("Money +1")
@@ -127,19 +133,26 @@ class Game:
  
    def execute(self):
       while(True):
-         if len(self.game_objects) <= 1:
-            self.generate_lvl()
+         if self.in_menu:
+            for event in pygame.event.get():
+               if event.type == pygame.QUIT:
+                  self.exit()
+               self.menu.handle_event(event)
 
-         for event in pygame.event.get():
-            self.on_event(event)
+            self.menu.update()
+            self.menu.draw(self._DISPLAYSURF)
+         else:
+            if len(self.game_objects) <= 1:
+               self.generate_lvl()
 
-         self.game_loop()
-         self.render()
+            for event in pygame.event.get():
+               self.on_event(event)
+
+            self.game_loop()
+            self.render()
+            self.input_handler.handle_input()
 
          pygame.display.update()
-
-         self.input_handler.handle_input()
-
          self._FramePerSec.tick(self._FPS)
 
 
