@@ -13,7 +13,7 @@ from Player.Weapon.Pierce import Pierce
 from GameInputHandler import GameInputHandler
 from constants import *
 from Menu import Menu
-
+from Shop import Shop
 
 class Game:
    def __init__(self):
@@ -23,6 +23,8 @@ class Game:
       self.menu = Menu(self)
       self.in_menu = True
       self.game_over = False
+      self.shop = Shop(self)
+      self.in_shop = False
       self.back_to_menu_rect = pygame.Rect(0, 0, 0, 0)
       self.retry_rect = pygame.Rect(0, 0, 0, 0)
       self.selected_option = 0
@@ -57,10 +59,22 @@ class Game:
 
    def start_game(self):
       self.in_menu = False
+      self.in_shop = False
+
+   def enter_shop(self):
+      self.in_menu = False
+      self.in_shop = True
+
+   def exit_shop(self):
+      self.in_menu = True
+      self.in_shop = False
 
    def collect(self):
       print("Money +1")
       self.money += 1
+
+   def get_player_balance(self):
+      return self.money
    
    def destroy_object(self,obj):
       #queue object
@@ -145,9 +159,10 @@ class Game:
       
    def render(self):
       self._DISPLAYSURF.fill(BLACK)
-      self._DISPLAYSURF.blit(self.font.render(f"Level: {self.level}", 1, (255,255,255)), (10, 0))
+      self._DISPLAYSURF.blit(self.font.render(f"Level: {self.level}", 1, (255,255,255)), (0, 0))
       self.player.draw_ammo_bar(self._DISPLAYSURF, self.font)
       self.player.draw_health_bar(self._DISPLAYSURF)
+      self._DISPLAYSURF.blit(self.font.render(f"Coins: {self.money}", 1, (255,255,255)), (0, 750))
       for obj in self.game_objects:
          obj.draw(self._DISPLAYSURF)
 
@@ -176,6 +191,14 @@ class Game:
 
             self.menu.update()
             self.menu.draw(self._DISPLAYSURF)
+         elif self.in_shop:
+            for event in pygame.event.get():
+               if event.type == pygame.QUIT:
+                  self.exit()
+               self.shop.handle_event(event)
+
+            self.shop.update()
+            self.shop.draw(self._DISPLAYSURF)
          else:
             if self.game_over:
                for event in pygame.event.get():
