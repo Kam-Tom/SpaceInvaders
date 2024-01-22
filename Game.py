@@ -126,9 +126,9 @@ class Game:
    def game_loop(self):
       #update
       for obj in self.game_objects:
-         if isinstance(obj, (Missile, Multiplier, Pierce)):
-            obj.update(obj)
-         else:
+         # if isinstance(obj, (Missile, Multiplier, Pierce)):
+         #    obj.update(obj)
+         # else:
             obj.update()
 
       if self.player.health <= 0:
