@@ -14,17 +14,17 @@ class Multiplier(Decorator):
         super().enable(x, y)
 
     def disable(self, obj):
-        self.component.size = (self.component.size[0] / self.multiplier, self.component.size[1] / self.multiplier)
-        # self.component.on_disable(self)
+        self.component.size = (self.component.rect.width / self.multiplier, self.component.rect.height / self.multiplier)
         super(Multiplier, self).disable(obj)
+        # self.component.on_disable(self)
         # self.on_disable(self)
         # self.x = 0
         # self.y = 0
 
-    def update(self):
-        if self.over_screen():
-            self.disable(self)
-        super(Multiplier, self).update()
+    def update(self, obj):
+        super(Multiplier, self).update(obj)
+        # if self.over_screen():
+        #     self.disable(self)
         # self.y -= self.velocity
         # self.rect.topleft = (self.x, self.y)
         # if self.over_screen():
