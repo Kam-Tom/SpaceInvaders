@@ -19,14 +19,7 @@ class Game:
       pygame.init()
       self._FPS = 60
       self._FramePerSec = pygame.time.Clock()
-      self.menu = Menu(self)
-      self.in_menu = True
-      self.game_over = False
-      self.shop = Shop(self)
-      self.in_shop = False
-      self.back_to_menu_rect = pygame.Rect(0, 0, 0, 0)
-      self.retry_rect = pygame.Rect(0, 0, 0, 0)
-      self.selected_option = 0
+
 
       #set background
       self._DISPLAYSURF = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
@@ -50,6 +43,15 @@ class Game:
       #set Input handler
       self.input_handler = GameInputHandler(self.player)
       self.to_destroy = []
+
+      self.menu = Menu(self)
+      self.in_menu = True
+      self.game_over = False
+      self.shop = Shop(self)
+      self.in_shop = False
+      self.back_to_menu_rect = pygame.Rect(0, 0, 0, 0)
+      self.retry_rect = pygame.Rect(0, 0, 0, 0)
+      self.selected_option = 0
 
       self.level = 1
       self.coins = 0
@@ -112,6 +114,7 @@ class Game:
    def generate_lvl(self):
 
       self.player.enable(800, 850)
+      self.player.reset_hp()
 
       if self.player not in self.game_objects:
          self.game_objects.append(self.player)
@@ -220,6 +223,12 @@ class Game:
  
    def execute(self):
       self.angle = 0
+
+      self.in_menu = False
+      self.in_shop = True
+      self.coins = 30
+
+      
       while(True):
 
          if self.in_menu:

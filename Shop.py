@@ -18,14 +18,13 @@ class Shop:
         self.selected_option = 0
         self.game = game
         self._ship_history = []
-        self.bought_items = []
-        self.item_quantities = [0 for _ in self.options]
+        self.item_quantities = [game.player.get_ammo(),game.player.get_speed(),game.player.get_max_hp()]
 
     def draw(self, surface):
         surface.fill(BLACK)
         title = self.title_font.render("Shop", 5, (255,255,255))
         surface.blit(title, (SCREEN_WIDTH//2 - 30 - title.get_width()//2, SCREEN_HEIGHT//4 - 100))
-        balance_text = self.font.render(f"Balance: {self.game.get_player_balance()}", 1, (255,255,255))
+        balance_text = self.font.render(f"Balance: {self.game.coins}", 1, (255,255,255))
         surface.blit(balance_text, (SCREEN_WIDTH//2 - 30 - balance_text.get_width()//2, 0))
 
         cost_font = pygame.font.SysFont('comicsans', 30)
@@ -39,8 +38,6 @@ class Shop:
                 image, cost = option
                 if i == self.selected_option:
                     pygame.draw.rect(surface, (255,0,0), (x - 10, y - 10, image.get_width() + 20, image.get_height() + 20), 2)
-                elif i in self.bought_items:
-                    pygame.draw.rect(surface, (0,255,0), (x - 10, y - 10, image.get_width() + 20, image.get_height() + 20), 2)
                 else:
                     pygame.draw.rect(surface, (255,255,255), (x - 10, y - 10, image.get_width() + 20, image.get_height() + 20), 2)
                 
@@ -82,39 +79,48 @@ class Shop:
                 self.selected_option = (self.selected_option + 1) % (len(self.options) + 2)
             
             elif event.key == pygame.K_RETURN:
-                if self.selected_option < len(self.options):
-                    if self.game.coins >= ITEM_COST:
-                        self.backup_ship()
-                        if self.selected_option == 0:
-                            self.game.player.add_speed()
-                        elif self.selected_option == 1:
-                            self.game.player.add_max_hp()
-                        elif self.selected_option == 2:
-                            self.game.player.add_max_ammo()
-                        
-                        self.item_quantities[self.selected_option] += 1
-                        self.bought_items.append(self.selected_option)
-                        self.game.coins -= ITEM_COST
-                    else:
-                        print("Not enough coins to purchase this item.")
-                elif self.selected_option == len(self.options):
-                    if self.bought_items:
-                        last_bought_item = self.bought_items[-1]
-                        self.undo_shopping()
-                        self.bought_items.pop()
-                        self.item_quantities[last_bought_item] -= 1
-                        self.game.coins += ITEM_COST
-                    else:
-                        print("No items to return.")
-                elif self.selected_option == len(self.options) + 1:
+
+                #Not enough money
+                if self.selected_option < 3 and self.game.coins < ITEM_COST:
+                    return
+                
+                if self.selected_option == 0:
+                    self.backup_ship()
+                    self.game.player.add_max_ammo()
+                    self.game.coins -= ITEM_COST
+            
+                if self.selected_option == 1:
+                    self.backup_ship()
+                    self.game.player.add_speed()
+                    self.game.coins -= ITEM_COST
+
+                if self.selected_option == 2:
+                    self.backup_ship()
+                    self.game.player.add_max_hp()
+                    self.game.coins -= ITEM_COST
+
+                if self.selected_option == 3:
+                    self.undo_shopping()
+
+                self.update_item_quantitis()
+
+
+                if self.selected_option == 4:
                     self.game.exit_shop()
                     self.game.start_next_level()
 
+
+    def update_item_quantitis(self):
+        self.item_quantities = [self.game.player.get_ammo(),self.game.player.get_speed(),self.game.player.get_max_hp()]
+
     def undo_shopping(self):
-        if not len(self._ship_history) or not self.bought_items:
+        if len(self._ship_history) == 0:
             return
         snapshot = self._ship_history.pop()
         self.game.player.restore(snapshot)
+        self.game.coins += ITEM_COST
+
+
 
     def backup_ship(self):
         self._ship_history.append(self.game.player.save())

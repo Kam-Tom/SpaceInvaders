@@ -88,6 +88,16 @@ class Player(Ship):
         self.health += 1
     def add_speed(self):
         self._speed += 1
+
+    def get_ammo(self):
+        return self._max_ammo
+    def get_max_hp(self):
+        return self._max_health
+    def get_speed(self):
+        return self._speed
+    
+    def reset_hp(self):
+        self.health = self._max_health
         
     def save(self) -> ShipSnapshot:
         return ShipSnapshot(self._speed,self._max_ammo,self._max_health)
