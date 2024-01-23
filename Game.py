@@ -113,7 +113,6 @@ class Game:
    def destroy_player(self,obj):
       self.game_over = True
       self.selected_option = 0
-         
 
    def enemy_shoot(self, pos:(int,int)):
       egg = self.pool.get_object(Projectile.__name__)
@@ -178,9 +177,9 @@ class Game:
 
       #check check_colisions
       for i in range(len(self.game_objects)):
-         for j in range(len(self.game_objects)):
+         for j in range(i+1,len(self.game_objects)):
             #skip destroyed objects
-            if self.game_objects[i] in self.to_destroy:
+            if self.game_objects[i] in self.to_destroy or self.game_objects[j] in self.to_destroy:
                continue
             self.game_objects[i].check_colision(self.game_objects[j])
 
