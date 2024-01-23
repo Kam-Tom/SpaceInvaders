@@ -7,15 +7,11 @@ class Multiplier(Decorator):
         self.multiplier = 5
     
     def draw(self, surface):
-        super(Multiplier, self).draw(surface)
+        super().draw(surface)
 
     def enable(self, x, y):
-        self.component.size = (self.component.rect.width * self.multiplier, self.component.rect.height * self.multiplier)
-        super(Multiplier, self).enable(x, y)
-        # self.x = x
-        # self.y = y
-        # self.velocity = 5
-        # self.rect.topleft = (x, y)
+        self.component.size = (self.component.size[0] * self.multiplier, self.component.size[1] * self.multiplier)
+        super().enable(x, y)
 
     def disable(self, obj):
         self.component.size = (self.component.rect.width / self.multiplier, self.component.rect.height / self.multiplier)

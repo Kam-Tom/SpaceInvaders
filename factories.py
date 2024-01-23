@@ -5,10 +5,8 @@ from Player.Player import Player
 from Enemy.Broiler import Broiler
 from Enemy.Polish import Polish
 from Enemy.Leghorn import Leghorn
-from Enemy.Egg import Egg
-from Enemy.Drop import Drop
 #Missile
-from Player.Weapon.Missile import Missile
+from Projectile import Projectile
 
 from Ships.ShipModel import ShipModelFactory
 
@@ -51,20 +49,8 @@ class PolishFactory(DrawableFactory):
     def create(self) -> Drawable:
         return Polish(ship_model_factory, self.on_shoot,self.on_drop,self.on_disable)
     
-class MissileFactory(DrawableFactory):
+class ProjectileFactory(DrawableFactory):
     def __init__(self,disable_callback) -> None:
         self.on_disable = disable_callback
     def create(self) -> Drawable:
-        return Missile((5, 10), "missile_blue.png",self.on_disable)
-    
-class EggFactory(DrawableFactory):
-    def __init__(self,disable_callback) -> None:
-        self.on_disable = disable_callback
-    def create(self) -> Drawable:
-        return Egg((12, 16), "egg.png",self.on_disable)
-    
-class DropFactory(DrawableFactory):
-    def __init__(self,disable_callback) -> None:
-        self.on_disable = disable_callback
-    def create(self) -> Drawable:
-        return Drop((16, 16), "money.png",self.on_disable)
+        return Projectile(self.on_disable)

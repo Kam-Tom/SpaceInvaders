@@ -3,10 +3,8 @@ import time
 
 from Ships.Ship import Ship
 from Ships.ShipModel import ShipModelFactory
-from Player.Weapon.Missile import Missile
+from Projectile import Projectile
 from Player.Weapon.WeaponStates import LoadedWeapon
-from Enemy.Egg import Egg
-from Enemy.Drop import Drop
 
 from constants import SCREEN_HEIGHT
 
@@ -82,10 +80,9 @@ class Player(Ship):
         pass
 
     def check_colision(self, obj):
-        if self.rect.colliderect(obj.rect) and isinstance(obj,Egg):
-            print("HP -1")
+        if self.rect.colliderect(obj.rect) and isinstance(obj, Projectile) and obj.tag=="egg":
             obj.disable()
             self.health -= 1
-        if self.rect.colliderect(obj.rect) and isinstance(obj,Drop):
+        if self.rect.colliderect(obj.rect) and isinstance(obj, Projectile) and obj.tag=="coin":
             self.on_collect()
             obj.disable()

@@ -6,10 +6,8 @@ from Pool import Pool
 from factories import *
 from Player.Player import Player
 from Enemy.Broiler import Broiler
-from Enemy.Egg import Egg
-from Player.Weapon.Missile import Missile
-from Player.Weapon.Multiplier import Multiplier
-from Player.Weapon.Pierce import Pierce
+from Projectile import Projectile
+
 from GameInputHandler import GameInputHandler
 from constants import *
 from Menu import Menu
@@ -43,11 +41,9 @@ class Game:
       self.pool.register_category(Broiler.__name__,BroilerFactory(self.enemy_shoot,self.destroy_object,self.drop),10)
       self.pool.register_category(Leghorn.__name__,LeghornFactory(self.enemy_shoot,self.destroy_object,self.drop),10)
       self.pool.register_category(Polish.__name__,PolishFactory(self.enemy_shoot,self.destroy_object,self.drop),10)
-      self.pool.register_category(Missile.__name__,MissileFactory(self.destroy_object),100)
-      self.pool.register_category(Multiplier.__name__,MissileFactory(self.destroy_object),100)
-      self.pool.register_category(Pierce.__name__,MissileFactory(self.destroy_object),100)
-      self.pool.register_category(Egg.__name__,EggFactory(self.destroy_object),100)
-      self.pool.register_category(Drop.__name__,DropFactory(self.destroy_object),100)
+
+      self.pool.register_category(Projectile.__name__,ProjectileFactory(self.destroy_object),100)
+
       
       self.player = self.pool.get_object("Player")
       #set Input handler
@@ -57,7 +53,7 @@ class Game:
       self.level = 1
       self.money = 0
 
-   def start_game(self):
+   def start_game(self):   
       self.in_menu = False
       self.in_shop = False
 
@@ -71,7 +67,6 @@ class Game:
       self.state = 'game'
 
    def collect(self):
-      print("Money +1")
       self.money += 1
 
    def get_player_balance(self):
@@ -95,23 +90,21 @@ class Game:
       self.to_destroy.append(obj)
 
    def enemy_shoot(self, pos:(int,int)):
-      egg = self.pool.get_object(Egg.__name__)
+      egg = self.pool.get_object(Projectile.__name__)
+      egg.set_type("egg",-5)
       egg.enable(*pos)
       self.game_objects.append(egg)
 
    def shoot(self, pos:(int,int)):
-      if self.money == 0:
-         missile = self.pool.get_object("Missile")
-      if self.money >= 1: # collect one coin to unlock bigger missiles
-         missile = Multiplier(self.pool.get_object("Missile"))
-      if self.money >= 5: # collect five coin to unlock pierce missiles
-         missile = Pierce(missile)
+      missile = self.pool.get_object(Projectile.__name__)
+      missile.set_type("missile",15)
       missile.enable(*pos)
 
       self.game_objects.append(missile)
    
    def drop(self, pos:(int,int)):
-      drop = self.pool.get_object(Drop.__name__)
+      drop = self.pool.get_object(Projectile.__name__)
+      drop.set_type("coin",-2)
       drop.enable(*pos)
       self.game_objects.append(drop)
 
@@ -147,9 +140,9 @@ class Game:
    def game_loop(self):
       #update
       for obj in self.game_objects:
-         if isinstance(obj, (Missile, Multiplier, Pierce)):
-            obj.update(obj)
-         else:
+         # if isinstance(obj, (Missile, Multiplier, Pierce)):
+         #    obj.update(obj)
+         # else:
             obj.update()
 
       if self.player.health <= 0:
