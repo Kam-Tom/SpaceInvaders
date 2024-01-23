@@ -35,7 +35,7 @@ class Player(Ship):
         self.y = y
 
     def disable(self):
-        pass
+        self.on_disable(self)
 
     def update(self):
         pass
@@ -77,6 +77,8 @@ class Player(Ship):
         if self.rect.colliderect(obj.rect) and isinstance(obj, Projectile) and obj.tag=="egg":
             obj.disable()
             self.health -= 1
+            if self.health <= 0:
+                self.disable()
         if self.rect.colliderect(obj.rect) and isinstance(obj, Projectile) and obj.tag in ["coin","big_shoot","double_shoot","triple_shoot"]:
             self.on_collect(obj.tag)
             obj.disable()
