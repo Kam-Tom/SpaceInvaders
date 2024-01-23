@@ -157,11 +157,13 @@ class Game:
 
       for obj in self.to_destroy:
          self.pool.return_object(obj.__class__.__name__,obj)
-         self.game_objects.remove(obj)
+         if obj in self.game_objects:
+            self.game_objects.remove(obj)
       
       self.to_destroy = []
 
-      if not any(isinstance(obj, (Broiler, Leghorn, Polish)) for obj in self.game_objects):
+      enemies = [obj for obj in self.game_objects if isinstance(obj, (Broiler, Leghorn, Polish))]
+      if not enemies:
          if not hasattr(self, 'timer_started') or not self.timer_started:
             self.timer_started = True
             self.timer = pygame.time.get_ticks()
@@ -185,7 +187,8 @@ class Game:
       #remove old objects
       for obj in self.to_destroy:
          self.pool.return_object(obj.__class__.__name__,obj)
-         self.game_objects.remove(obj)
+         if obj in self.game_objects:
+            self.game_objects.remove(obj)
       
       self.to_destroy = []
       
