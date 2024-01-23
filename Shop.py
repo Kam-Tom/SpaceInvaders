@@ -22,11 +22,21 @@ class Shop:
 
     def draw(self, surface):
         surface.fill(BLACK)
+        self.draw_title(surface)
+        self.draw_balance(surface)
+        self.draw_options(surface)
+        self.draw_back_button(surface)
+        self.draw_next_level_button(surface)
+
+    def draw_title(self, surface):
         title = self.title_font.render("Shop", 5, (255,255,255))
         surface.blit(title, (SCREEN_WIDTH//2 - 30 - title.get_width()//2, SCREEN_HEIGHT//4 - 100))
+
+    def draw_balance(self, surface):
         balance_text = self.font.render(f"Balance: {self.game.coins}", 1, (255,255,255))
         surface.blit(balance_text, (SCREEN_WIDTH//2 - 30 - balance_text.get_width()//2, 0))
 
+    def draw_options(self, surface):
         cost_font = pygame.font.SysFont('comicsans', 30)
         x_start = SCREEN_WIDTH//4
         y = SCREEN_HEIGHT//2 - 100
@@ -35,26 +45,33 @@ class Shop:
         for i, option in enumerate(self.options):
             x = x_start + i * gap
             if isinstance(option, tuple):
-                image, cost = option
-                if i == self.selected_option:
-                    pygame.draw.rect(surface, (255,0,0), (x - 10, y - 10, image.get_width() + 20, image.get_height() + 20), 2)
-                else:
-                    pygame.draw.rect(surface, (255,255,255), (x - 10, y - 10, image.get_width() + 20, image.get_height() + 20), 2)
-                
-                quantity_text = cost_font.render(f"Quantity: {self.item_quantities[i]}", 1, (255,255,255))
-                surface.blit(quantity_text, (x + image.get_width()//2 - quantity_text.get_width()//2, y - quantity_text.get_height() - 10))
-                surface.blit(image, (x, y))
-                cost_text = cost_font.render(f"Cost: {cost}", 1, (255,255,255))
-                surface.blit(cost_text, (x + image.get_width()//2 - cost_text.get_width()//2, y + image.get_height() + 10))
+                self.draw_option(surface, option, i, x, y, cost_font)
             else:
-                text = self.font.render(str(option), 1, (255,255,255))
-                x = SCREEN_WIDTH//2 - text.get_width()//2
-                y = SCREEN_HEIGHT//2 + 200
-                if i == self.selected_option:
-                    pygame.draw.rect(surface, (255,255,255), (x + 150 - 10, y - 10, text.get_width() + 20, text.get_height() + 20), 2)
-                    text = self.font.render(option, 1, (255,0,0))
-                surface.blit(text, (x + 150, y))
+                self.draw_text_option(surface, option, i, x, y)
 
+    def draw_option(self, surface, option, i, x, y, cost_font):
+        image, cost = option
+        if i == self.selected_option:
+            pygame.draw.rect(surface, (255,0,0), (x - 10, y - 10, image.get_width() + 20, image.get_height() + 20), 2)
+        else:
+            pygame.draw.rect(surface, (255,255,255), (x - 10, y - 10, image.get_width() + 20, image.get_height() + 20), 2)
+        
+        quantity_text = cost_font.render(f"Quantity: {self.item_quantities[i]}", 1, (255,255,255))
+        surface.blit(quantity_text, (x + image.get_width()//2 - quantity_text.get_width()//2, y - quantity_text.get_height() - 10))
+        surface.blit(image, (x, y))
+        cost_text = cost_font.render(f"Cost: {cost}", 1, (255,255,255))
+        surface.blit(cost_text, (x + image.get_width()//2 - cost_text.get_width()//2, y + image.get_height() + 10))
+
+    def draw_text_option(self, surface, option, i, x, y):
+        text = self.font.render(str(option), 1, (255,255,255))
+        x = SCREEN_WIDTH//2 - text.get_width()//2
+        y = SCREEN_HEIGHT//2 + 200
+        if i == self.selected_option:
+            pygame.draw.rect(surface, (255,255,255), (x + 150 - 10, y - 10, text.get_width() + 20, text.get_height() + 20), 2)
+            text = self.font.render(option, 1, (255,0,0))
+        surface.blit(text, (x + 150, y))
+
+    def draw_back_button(self, surface):
         back_text = self.font.render("Back", 1, (255,255,255))
         x = SCREEN_WIDTH//2 - 30 - back_text.get_width()//2
         y = SCREEN_HEIGHT//2 + 200
@@ -63,9 +80,11 @@ class Shop:
             back_text = self.font.render("Back", 1, (255,0,0))
         surface.blit(back_text, (x, y))
 
+    def draw_next_level_button(self, surface):
         next_level_text = self.font.render("Next level", 1, (255,255,255))
+        back_text = self.font.render("Back", 1, (255,255,255))
         x = SCREEN_WIDTH//2 - 30 - next_level_text.get_width()//2
-        y += back_text.get_height() + 20
+        y = SCREEN_HEIGHT//2 + 200 + back_text.get_height() + 20
         if self.selected_option == len(self.options) + 1:
             pygame.draw.rect(surface, (255,255,255), (x - 10, y - 10, next_level_text.get_width() + 20, next_level_text.get_height() + 20), 2)
             next_level_text = self.font.render("Next level", 1, (255,0,0))
