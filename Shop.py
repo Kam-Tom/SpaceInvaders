@@ -8,12 +8,18 @@ class Shop:
         self.game = game
         self.font = pygame.font.SysFont('comicsans', 50)
         self.title_font = pygame.font.SysFont('comicsans', 80)
-        explosion_image = pygame.image.load('Sprites/shop_item_1.png')
-        resized_explosion_image = pygame.transform.scale(explosion_image, (150, 150))
-        self.options = [(resized_explosion_image, 100), (resized_explosion_image, 200), (resized_explosion_image, 300)]
+        shop_item_1 = pygame.image.load('Sprites/shop_item_1.png')
+        shop_item_2 = pygame.image.load('Sprites/shop_item_2.png')
+        shop_item_3 = pygame.image.load('Sprites/shop_item_3.png')
+        resized_shop_item_1 = pygame.transform.scale(shop_item_1, (150, 150))
+        resized_shop_item_2 = pygame.transform.scale(shop_item_2, (150, 150))
+        resized_shop_item_3 = pygame.transform.scale(shop_item_3, (150, 150))
+        self.options = [(resized_shop_item_1, ITEM_COST), (resized_shop_item_2, ITEM_COST), (resized_shop_item_3, ITEM_COST)]
         self.selected_option = 0
         self.game = game
         self._ship_history = []
+        self.bought_items = []
+        self.item_quantities = [0 for _ in self.options]
 
     def draw(self, surface):
         surface.fill(BLACK)
@@ -33,15 +39,18 @@ class Shop:
                 image, cost = option
                 if i == self.selected_option:
                     pygame.draw.rect(surface, (255,0,0), (x - 10, y - 10, image.get_width() + 20, image.get_height() + 20), 2)
-                # elif option in self.bought_items:
-                #     pygame.draw.rect(surface, (0,255,0), (x - 10, y - 10, image.get_width() + 20, image.get_height() + 20), 2)
+                elif i in self.bought_items:
+                    pygame.draw.rect(surface, (0,255,0), (x - 10, y - 10, image.get_width() + 20, image.get_height() + 20), 2)
                 else:
                     pygame.draw.rect(surface, (255,255,255), (x - 10, y - 10, image.get_width() + 20, image.get_height() + 20), 2)
+                
+                quantity_text = cost_font.render(f"Quantity: {self.item_quantities[i]}", 1, (255,255,255))
+                surface.blit(quantity_text, (x + image.get_width()//2 - quantity_text.get_width()//2, y - quantity_text.get_height() - 10))
                 surface.blit(image, (x, y))
                 cost_text = cost_font.render(f"Cost: {cost}", 1, (255,255,255))
-                surface.blit(cost_text, (x, y + image.get_height() + 10))
+                surface.blit(cost_text, (x + image.get_width()//2 - cost_text.get_width()//2, y + image.get_height() + 10))
             else:
-                text = self.font.render(option, 1, (255,255,255))
+                text = self.font.render(str(option), 1, (255,255,255))
                 x = SCREEN_WIDTH//2 - text.get_width()//2
                 y = SCREEN_HEIGHT//2 + 200
                 if i == self.selected_option:
@@ -73,32 +82,39 @@ class Shop:
                 self.selected_option = (self.selected_option + 1) % (len(self.options) + 2)
             
             elif event.key == pygame.K_RETURN:
-                if self.selected_option == 0:
-                    self.backup_ship()
-                    self.game.player.add_speed()
-                    self.game.coins-=ITEM_COST
-                if self.selected_option == 1:
-                    self.backup_ship()
-                    self.game.player.add_max_hp()
-                    self.game.coins-=ITEM_COST
-                if self.selected_option == 2:
-                    self.backup_ship()
-                    self.game.player.add_max_ammo()
-                    self.game.coins-=ITEM_COST
-                if self.selected_option == 3:
-                    self.undo_shopping()
-                    self.game.coins+=ITEM_COST
-                if self.selected_option == 4:
+                if self.selected_option < len(self.options):
+                    if self.game.coins >= ITEM_COST:
+                        self.backup_ship()
+                        if self.selected_option == 0:
+                            self.game.player.add_speed()
+                        elif self.selected_option == 1:
+                            self.game.player.add_max_hp()
+                        elif self.selected_option == 2:
+                            self.game.player.add_max_ammo()
+                        
+                        self.item_quantities[self.selected_option] += 1
+                        self.bought_items.append(self.selected_option)
+                        self.game.coins -= ITEM_COST
+                    else:
+                        print("Not enough coins to purchase this item.")
+                elif self.selected_option == len(self.options):
+                    if self.bought_items:
+                        last_bought_item = self.bought_items[-1]
+                        self.undo_shopping()
+                        self.bought_items.pop()
+                        self.item_quantities[last_bought_item] -= 1
+                        self.game.coins += ITEM_COST
+                    else:
+                        print("No items to return.")
+                elif self.selected_option == len(self.options) + 1:
                     self.game.exit_shop()
                     self.game.start_next_level()
 
     def undo_shopping(self):
-        if not len(self._ship_history):
+        if not len(self._ship_history) or not self.bought_items:
             return
         snapshot = self._ship_history.pop()
         self.game.player.restore(snapshot)
 
     def backup_ship(self):
         self._ship_history.append(self.game.player.save())
-
-

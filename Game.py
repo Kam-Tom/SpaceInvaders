@@ -84,6 +84,7 @@ class Game:
 
 
    def start_next_level(self):
+      self.state = 'shop'
       self.level += 1
       self.generate_lvl()
       
@@ -168,7 +169,7 @@ class Game:
             self.timer_started = True
             self.timer = pygame.time.get_ticks()
 
-         if pygame.time.get_ticks() - self.timer > 1000:
+         if pygame.time.get_ticks() - self.timer > 100:
             self.enter_shop()
             self.timer_started = False
 
