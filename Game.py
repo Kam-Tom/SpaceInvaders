@@ -1,13 +1,14 @@
 import pygame, sys
 import time
-
 from pygame.locals import *
 from Pool import Pool
 from factories import *
 from Player.Player import Player
 from Enemy.Broiler import Broiler
 from Projectile import Projectile
-
+from ShootingStrategies.NormalShoot import NormalShoot
+from ShootingStrategies.MultiShoot import MultiShoot
+from ShootingStrategies.TripleShoot import TripleShoot
 from GameInputHandler import GameInputHandler
 from constants import *
 from Menu import Menu
@@ -44,7 +45,7 @@ class Game:
 
       self.pool.register_category(Projectile.__name__,ProjectileFactory(self.destroy_object),100)
 
-      
+      self.shoot_strategy = MultiShoot()
       self.player = self.pool.get_object("Player")
       #set Input handler
       self.input_handler = GameInputHandler(self.player)
@@ -97,11 +98,9 @@ class Game:
       self.game_objects.append(egg)
 
    def shoot(self, pos:(int,int)):
-      missile = self.pool.get_object(Projectile.__name__)
-      missile.set_type("missile",15)
-      missile.enable(*pos)
+      missiles = self.shoot_strategy.shoot(self.pool,pos)
 
-      self.game_objects.append(missile)
+      self.game_objects.extend(missiles)
    
    def drop(self, pos:(int,int)):
       drop = self.pool.get_object(Projectile.__name__)
@@ -194,6 +193,7 @@ class Game:
       self.to_destroy = []
       
    def render(self):
+
       self._DISPLAYSURF.fill(BLACK)
       self._DISPLAYSURF.blit(self.font.render(f"Level: {self.level}", 1, (255,255,255)), (0, 0))
       self.player.draw_ammo_bar(self._DISPLAYSURF, self.font)
@@ -201,7 +201,7 @@ class Game:
       self._DISPLAYSURF.blit(self.font.render(f"Coins: {self.coins}", 1, (255,255,255)), (0, 750))
       for obj in self.game_objects:
          obj.draw(self._DISPLAYSURF)
-
+      
       if self.game_over:
          game_over_text = self.game_over_font.render("Game Over", 1, (255,255,255))
          retry_text = self.font.render("Retry", 1, (255,0,0) if self.selected_option == 0 else (255,255,255))
@@ -218,10 +218,9 @@ class Game:
       sys.exit()
  
    def execute(self):
-      self.in_shop = True
-      self.in_menu = False
-
+      self.angle = 0
       while(True):
+
          if self.in_menu:
             for event in pygame.event.get():
                if event.type == pygame.QUIT:
