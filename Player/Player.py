@@ -12,20 +12,21 @@ class Player(Ship):
     def __init__(self,ship_model_factory:ShipModelFactory,shoot_callback,disable_callback,collect_callback):
         super().__init__(shoot_callback,disable_callback)
 
+        # Initialize player attributes
         self.width = 64
         self.height = 75
-        self.ship_model = ship_model_factory.get_ship_type((self.width, self.height),(0.1,0),"spaceship.png")
+        self.ship_model = ship_model_factory.get_ship_type((self.width, self.height),(0.1,0),"spaceship.png") # create player's ship model in factory
         self.rect = self.ship_model.image.get_rect()
         self.rect.center=(0,0) 
         self._speed = 5
         self.on_collect = collect_callback
-        self.ammo = 10
+        self.ammo = 10 # Player's current ammo
         self._max_ammo = 10
         self.weapon_cooldown = 0
         self.state = None
         self.change_weapon_state(LoadedWeapon())
-        self.ammo_bar_piece = pygame.transform.scale(pygame.image.load('Sprites/ammo.png'), (10, 20))
-        self.health = 5
+        self.ammo_bar_piece = pygame.transform.scale(pygame.image.load('Sprites/ammo.png'), (10, 20)) # Image of a single ammo bar piece
+        self.health = 5 # Player's current health
         self._max_health = 5
         self.heart_image = pygame.transform.scale(pygame.image.load('Sprites/heart.png'), (50, 50))
 
@@ -108,9 +109,11 @@ class Player(Ship):
     def reset_hp(self):
         self.health = self._max_health
         
+    # Save the current state of the player
     def save(self) -> ShipSnapshot:
         return ShipSnapshot(self._speed,self._max_ammo,self._max_health)
 
+    # Restore the player's attributes to a previous state
     def restore(self,snapshot:ShipSnapshot):
         self._speed = snapshot.get_speed()
         self._max_ammo = snapshot.get_max_ammo()
