@@ -7,7 +7,7 @@ class Menu:
         self.game = game
         self.font = pygame.font.SysFont('comicsans', 50)
         self.title_font = pygame.font.SysFont('comicsans', 80)
-        self.options = ["Play", "Shop", "Exit"]
+        self.options = ["Play", "Exit"]
         self.selected_option = 0
 
     def draw(self, surface):
@@ -33,8 +33,6 @@ class Menu:
                 if self.selected_option == 0:
                     self.game.start_game()
                 elif self.selected_option == 1:
-                    self.game.enter_shop()
-                elif self.selected_option == 2:
                     pygame.quit()
 
     def update(self):

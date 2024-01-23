@@ -66,8 +66,9 @@ class Game:
       self.in_shop = True
 
    def exit_shop(self):
-      self.in_menu = True
+      self.in_menu = False
       self.in_shop = False
+      self.state = 'game'
 
    def collect(self):
       print("Money +1")
@@ -75,7 +76,20 @@ class Game:
 
    def get_player_balance(self):
       return self.money
-   
+
+   def deduct_balance(self, amount):
+      if self.money >= amount:
+         self.money -= amount
+      else:
+         print("Not enough money!")
+
+   def add_balance(self, amount):
+      self.money += amount
+
+   def start_next_level(self):
+      self.level += 1
+      self.generate_lvl()
+      
    def destroy_object(self,obj):
       #queue object
       self.to_destroy.append(obj)
@@ -137,6 +151,31 @@ class Game:
             obj.update(obj)
          else:
             obj.update()
+
+      if self.player.health <= 0:
+         self.game_over = True
+         self.selected_option = 0
+
+      for i in range(len(self.game_objects)):
+         for j in range(len(self.game_objects)):
+            if self.game_objects[i] in self.to_destroy:
+               continue
+            self.game_objects[i].check_colision(self.game_objects[j])
+
+      for obj in self.to_destroy:
+         self.pool.return_object(obj.__class__.__name__,obj)
+         self.game_objects.remove(obj)
+      
+      self.to_destroy = []
+
+      if not any(isinstance(obj, (Broiler, Leghorn, Polish)) for obj in self.game_objects):
+         if not hasattr(self, 'timer_started') or not self.timer_started:
+            self.timer_started = True
+            self.timer = pygame.time.get_ticks()
+
+         if pygame.time.get_ticks() - self.timer > 1000:
+            self.enter_shop()
+            self.timer_started = False
 
       if self.player.health <= 0:
          self.game_over = True
