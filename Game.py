@@ -111,6 +111,7 @@ class Game:
 
    def enemy_shoot(self, pos:(int,int)):
       egg = self.pool.get_object(Projectile.__name__)
+      egg.size = (16,16)
       egg.set_type("egg",-5)
       egg.enable(*pos)
       self.game_objects.append(egg)
@@ -118,11 +119,12 @@ class Game:
    def shoot(self, pos:(int,int)):
       missiles = self.shoot_strategy.shoot(self.pool,pos)
 
-      self.game_objects.extend(missiles)
+      self.game_objects.extend(missiles)     
    
    def drop(self, pos:(int,int)):
       drop = self.pool.get_object(Projectile.__name__)
       item = random.choices(["coin","big_shoot","double_shoot","triple_shoot"], [0.25,0.25,0.25,0.25])[0]
+      drop.size = (16,16)
       drop.set_type(item,-2)
       drop.enable(*pos)
       self.game_objects.append(drop)
