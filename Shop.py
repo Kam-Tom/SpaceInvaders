@@ -2,28 +2,6 @@ import pygame
 from pygame.locals import *
 from constants import *
 
-class Memento:
-    def __init__(self, bought_items, balance):
-        self._state = bought_items.copy()
-        self._balance = balance
-
-    def get_state(self):
-        return self._state
-
-    def get_balance(self):
-        return self._balance
-
-class Caretaker:
-    def __init__(self):
-        self._mementos = []
-
-    def add_memento(self, memento):
-        self._mementos.append(memento)
-
-    def get_last_memento(self):
-        if self._mementos:
-            return self._mementos.pop()
-        return None
 
 class Shop:
     def __init__(self, game):
@@ -34,10 +12,8 @@ class Shop:
         resized_explosion_image = pygame.transform.scale(explosion_image, (150, 150))
         self.options = [(resized_explosion_image, 100), (resized_explosion_image, 200), (resized_explosion_image, 300)]
         self.selected_option = 0
-        self.bought_items = []
-        self.bought_items_history = []
-        self.caretaker = Caretaker()
         self.game = game
+        self._ship_history = []
 
     def draw(self, surface):
         surface.fill(BLACK)
@@ -57,8 +33,8 @@ class Shop:
                 image, cost = option
                 if i == self.selected_option:
                     pygame.draw.rect(surface, (255,0,0), (x - 10, y - 10, image.get_width() + 20, image.get_height() + 20), 2)
-                elif option in self.bought_items:
-                    pygame.draw.rect(surface, (0,255,0), (x - 10, y - 10, image.get_width() + 20, image.get_height() + 20), 2)
+                # elif option in self.bought_items:
+                #     pygame.draw.rect(surface, (0,255,0), (x - 10, y - 10, image.get_width() + 20, image.get_height() + 20), 2)
                 else:
                     pygame.draw.rect(surface, (255,255,255), (x - 10, y - 10, image.get_width() + 20, image.get_height() + 20), 2)
                 surface.blit(image, (x, y))
@@ -95,24 +71,34 @@ class Shop:
                 self.selected_option = (self.selected_option - 1) % (len(self.options) + 2)
             elif event.key == pygame.K_RIGHT or event.key == pygame.K_DOWN:
                 self.selected_option = (self.selected_option + 1) % (len(self.options) + 2)
+            
             elif event.key == pygame.K_RETURN:
-                if self.selected_option == len(self.options):
-                    if self.bought_items_history:
-                        last_bought_item = self.bought_items_history.pop()
-                        self.bought_items.remove(last_bought_item)
-                        self.game.add_balance(last_bought_item[1])
-                elif self.selected_option == len(self.options) + 1:
+                if self.selected_option == 0:
+                    self.backup_ship()
+                    self.game.player.add_speed()
+                    self.game.coins-=ITEM_COST
+                if self.selected_option == 1:
+                    self.backup_ship()
+                    self.game.player.add_max_hp()
+                    self.game.coins-=ITEM_COST
+                if self.selected_option == 2:
+                    self.backup_ship()
+                    self.game.player.add_max_ammo()
+                    self.game.coins-=ITEM_COST
+                if self.selected_option == 3:
+                    self.undo_shopping()
+                    self.game.coins+=ITEM_COST
+                if self.selected_option == 4:
                     self.game.exit_shop()
                     self.game.start_next_level()
-                else:
-                    selected_item = self.options[self.selected_option]
-                    if selected_item not in self.bought_items and self.game.get_player_balance() >= selected_item[1]:
-                        self.bought_items.append(selected_item)
-                        self.bought_items_history.append(selected_item)
-                        self.game.deduct_balance(selected_item[1])
-                    elif selected_item in self.bought_items:
-                        self.bought_items.remove(selected_item)
-                        self.game.add_balance(selected_item[1])
 
-    def update(self):
-        pass
+    def undo_shopping(self):
+        if not len(self._ship_history):
+            return
+        snapshot = self._ship_history.pop()
+        self.game.player.restore(snapshot)
+
+    def backup_ship(self):
+        self._ship_history.append(self.game.player.save())
+
+

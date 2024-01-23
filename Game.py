@@ -51,7 +51,7 @@ class Game:
       self.to_destroy = []
 
       self.level = 1
-      self.money = 0
+      self.coins = 0
 
    def start_game(self):   
       self.in_menu = False
@@ -67,26 +67,27 @@ class Game:
       self.state = 'game'
 
    def collect(self):
-      self.money += 1
+      self.coins += 1
 
    def get_player_balance(self):
-      return self.money
+      return self.coins
 
    def deduct_balance(self, amount):
-      if self.money >= amount:
-         self.money -= amount
+      if self.coins >= amount:
+         self.coins -= amount
       else:
          print("Not enough money!")
 
    def add_balance(self, amount):
-      self.money += amount
+      self.coins += amount
+
 
    def start_next_level(self):
       self.level += 1
       self.generate_lvl()
       
    def destroy_object(self,obj):
-      #queue object
+      #queue object to destroy
       self.to_destroy.append(obj)
 
    def enemy_shoot(self, pos:(int,int)):
@@ -197,7 +198,7 @@ class Game:
       self._DISPLAYSURF.blit(self.font.render(f"Level: {self.level}", 1, (255,255,255)), (0, 0))
       self.player.draw_ammo_bar(self._DISPLAYSURF, self.font)
       self.player.draw_health_bar(self._DISPLAYSURF)
-      self._DISPLAYSURF.blit(self.font.render(f"Coins: {self.money}", 1, (255,255,255)), (0, 750))
+      self._DISPLAYSURF.blit(self.font.render(f"Coins: {self.coins}", 1, (255,255,255)), (0, 750))
       for obj in self.game_objects:
          obj.draw(self._DISPLAYSURF)
 
@@ -217,6 +218,9 @@ class Game:
       sys.exit()
  
    def execute(self):
+      self.in_shop = True
+      self.in_menu = False
+
       while(True):
          if self.in_menu:
             for event in pygame.event.get():
@@ -232,8 +236,8 @@ class Game:
                   self.exit()
                self.shop.handle_event(event)
 
-            self.shop.update()
             self.shop.draw(self._DISPLAYSURF)
+
          else:
             if self.game_over:
                for event in pygame.event.get():

@@ -5,7 +5,7 @@ from Ships.Ship import Ship
 from Ships.ShipModel import ShipModelFactory
 from Projectile import Projectile
 from Player.Weapon.WeaponStates import LoadedWeapon
-
+from Player.ShipSnapshot import ShipSnapshot
 from constants import SCREEN_HEIGHT
 
 class Player(Ship):
@@ -17,16 +17,16 @@ class Player(Ship):
         self.ship_model = ship_model_factory.get_ship_type((self.width, self.height),(0.1,0),"spaceship.png")
         self.rect = self.ship_model.image.get_rect()
         self.rect.center=(0,0) 
-        self.velocity = 5
-        self.missiles = []
-        self.on_shoot = shoot_callback
+        self._speed = 5
         self.on_collect = collect_callback
         self.ammo = 10
+        self._max_ammo = 10
         self.weapon_cooldown = 0
         self.state = None
         self.change_weapon_state(LoadedWeapon())
         self.ammo_bar_piece = pygame.transform.scale(pygame.image.load('Sprites/ammo.png'), (10, 20))
         self.health = 5
+        self._max_health = 5
         self.heart_image = pygame.transform.scale(pygame.image.load('Sprites/heart.png'), (50, 50))
 
     def enable(self, x, y):
@@ -42,19 +42,19 @@ class Player(Ship):
 
     def moveLeft(self):
         if self.x > self.width // 2:
-            self.x -= self.velocity
+            self.x -= self._speed
             self.rect.center=(self.x,self.y) 
 
     def moveRight(self):
         if self.x < 1600 - self.width // 2:
-            self.x += self.velocity
+            self.x += self._speed
             self.rect.center=(self.x,self.y) 
 
     def shoot(self):
         self.state.shoot()
 
     def reload(self):
-        self.ammo = 10
+        self.ammo = self._max_ammo
 
     def change_weapon_state(self, state):
         self.state = state
@@ -73,12 +73,6 @@ class Player(Ship):
             heart_rect.topleft = (50 * i, 775)
             screen.blit(self.heart_image, heart_rect)
 
-    def save(self):
-        pass
-
-    def restore(self):
-        pass
-
     def check_colision(self, obj):
         if self.rect.colliderect(obj.rect) and isinstance(obj, Projectile) and obj.tag=="egg":
             obj.disable()
@@ -86,3 +80,19 @@ class Player(Ship):
         if self.rect.colliderect(obj.rect) and isinstance(obj, Projectile) and obj.tag=="coin":
             self.on_collect()
             obj.disable()
+
+    def add_max_ammo(self):
+        self._max_ammo += 1
+    def add_max_hp(self):
+        self._max_health += 1
+        self.health += 1
+    def add_speed(self):
+        self._speed += 1
+        
+    def save(self) -> ShipSnapshot:
+        return ShipSnapshot(self._speed,self._max_ammo,self._max_health)
+
+    def restore(self,snapshot:ShipSnapshot):
+        self._speed = snapshot.get_speed()
+        self._max_ammo = snapshot.get_max_ammo()
+        self._max_health = snapshot.get_max_health()
