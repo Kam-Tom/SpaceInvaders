@@ -85,19 +85,26 @@ class Player(Ship):
 
     def add_max_ammo(self):
         self._max_ammo += 1
+
     def add_max_hp(self):
         self._max_health += 1
         self.health += 1
+
     def add_speed(self):
         self._speed += 1
 
     def get_ammo(self):
         return self._max_ammo
+    
     def get_max_hp(self):
         return self._max_health
+    
     def get_speed(self):
         return self._speed
     
+    def reset_ammo(self):
+        self.ammo = self._max_ammo
+
     def reset_hp(self):
         self.health = self._max_health
         

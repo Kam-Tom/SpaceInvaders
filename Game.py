@@ -138,6 +138,7 @@ class Game:
 
       self.player.enable(SCREEN_WIDTH/2, SCREEN_HEIGHT-BORDER*4)
       self.player.reset_hp()
+      self.player.reset_ammo()
 
       if self.player not in self.game_objects:
          self.game_objects.append(self.player)
@@ -244,6 +245,7 @@ class Game:
    def clear_lvl(self):
       self.game_over = False
       self.player.reset_hp()
+      self.player.reset_ammo()
       self.coins = 0
       self.level = 1
       self.in_shop = False
