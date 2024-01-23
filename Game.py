@@ -6,8 +6,8 @@ from factories import *
 from Player.Player import Player
 from Enemy.Broiler import Broiler
 from Projectile import Projectile
-from ShootingStrategies.NormalShoot import NormalShoot
-from ShootingStrategies.MultiShoot import MultiShoot
+from ShootingStrategies.BigShoot import BigShoot
+from ShootingStrategies.DoubleShoot import DoubleShoot
 from ShootingStrategies.TripleShoot import TripleShoot
 from GameInputHandler import GameInputHandler
 from constants import *
@@ -38,7 +38,7 @@ class Game:
 
       self.pool.register_category(Projectile.__name__,ProjectileFactory(self.destroy_object),100)
 
-      self.shoot_strategy = MultiShoot()
+      self.shoot_strategy = BigShoot()
       self.player = self.pool.get_object("Player")
       #set Input handler
       self.input_handler = GameInputHandler(self.player)
@@ -69,8 +69,23 @@ class Game:
       self.in_shop = False
       self.state = 'game'
 
-   def collect(self):
-      self.coins += 1
+   def collect(self,drop_type):
+      print(drop_type)
+      if drop_type == "big_shoot":
+         print(drop_type + " OK")
+         self.shoot_strategy = BigShoot()
+      elif drop_type == "double_shoot":
+         print(drop_type + " OK")
+         self.shoot_strategy = DoubleShoot()
+      elif drop_type == "triple_shoot":
+         print(drop_type + " OK")
+         self.shoot_strategy = TripleShoot()
+      elif drop_type == "coin":
+         print(drop_type + " OK")
+         self.coins += 1
+      else:
+         print("Wrong Drop Type")
+
 
    def get_player_balance(self):
       return self.coins
@@ -107,7 +122,8 @@ class Game:
    
    def drop(self, pos:(int,int)):
       drop = self.pool.get_object(Projectile.__name__)
-      drop.set_type("coin",-2)
+      item = random.choices(["coin","big_shoot","double_shoot","triple_shoot"], [0.25,0.25,0.25,0.25])[0]
+      drop.set_type(item,-2)
       drop.enable(*pos)
       self.game_objects.append(drop)
 
@@ -122,18 +138,18 @@ class Game:
       for i in range(0, self.level * 2): 
          ship = self.pool.get_object(Polish.__name__)
          ship.hp_reset()
-         ship.enable(random.randint(BORDER * 2, SCREEN_WIDTH - BORDER * 2), random.randint(BORDER * 4, SCREEN_HEIGHT * 0.7 - BORDER * 2))
+         ship.enable(random.randint(BORDER * 2, SCREEN_WIDTH - BORDER * 2), random.randint(BORDER * 4, int(SCREEN_HEIGHT * 0.7) - BORDER * 2))
          self.game_objects.append(ship)
       for i in range(0, self.level * 2):
          ship = self.pool.get_object(Leghorn.__name__)
          ship.hp_reset()
-         ship.enable(random.randint(BORDER * 2, SCREEN_WIDTH - BORDER * 2), random.randint(BORDER * 4, SCREEN_HEIGHT * 0.5 - BORDER * 2))
+         ship.enable(random.randint(BORDER * 2, SCREEN_WIDTH - BORDER * 2), random.randint(BORDER * 4, int(SCREEN_HEIGHT * 0.5) - BORDER * 2))
          self.game_objects.append(ship)
 
       for i in range(0, self.level * 3):
          ship = self.pool.get_object(Broiler.__name__)
          ship.hp_reset()
-         ship.enable(random.randint(BORDER * 2, SCREEN_WIDTH - BORDER * 2), random.randint(BORDER * 4, SCREEN_HEIGHT * 0.7 - BORDER * 2))
+         ship.enable(random.randint(BORDER * 2, SCREEN_WIDTH - BORDER * 2), random.randint(BORDER * 4, int(SCREEN_HEIGHT * 0.7) - BORDER * 2))
          self.game_objects.append(ship)
 
 
@@ -144,9 +160,6 @@ class Game:
    def game_loop(self):
       #update
       for obj in self.game_objects:
-         # if isinstance(obj, (Missile, Multiplier, Pierce)):
-         #    obj.update(obj)
-         # else:
             obj.update()
 
       if self.player.health <= 0:
@@ -222,12 +235,6 @@ class Game:
       sys.exit()
  
    def execute(self):
-      self.angle = 0
-
-      self.in_menu = False
-      self.in_shop = True
-      self.coins = 30
-
       
       while(True):
 

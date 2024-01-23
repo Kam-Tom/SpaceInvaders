@@ -8,7 +8,7 @@ class AIChicken(Ship):
     def __init__(self,shoot_callback,drop_callback,disable_callback):
         super().__init__(shoot_callback,disable_callback)
         self.on_drop = drop_callback
-        self.drop_chance = 0.5
+        self.drop_chance = 1
         self.dir = (1,1)
 
     def shoot(self):

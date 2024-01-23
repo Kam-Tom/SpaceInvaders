@@ -77,8 +77,8 @@ class Player(Ship):
         if self.rect.colliderect(obj.rect) and isinstance(obj, Projectile) and obj.tag=="egg":
             obj.disable()
             self.health -= 1
-        if self.rect.colliderect(obj.rect) and isinstance(obj, Projectile) and obj.tag=="coin":
-            self.on_collect()
+        if self.rect.colliderect(obj.rect) and isinstance(obj, Projectile) and obj.tag in ["coin","big_shoot","double_shoot","triple_shoot"]:
+            self.on_collect(obj.tag)
             obj.disable()
 
     def add_max_ammo(self):

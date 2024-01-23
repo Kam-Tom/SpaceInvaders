@@ -1,7 +1,7 @@
 from ShootingStrategies.ShootStrategy import ShootStrategy
 from Projectile import Projectile
 
-class MultiShoot(ShootStrategy):
+class DoubleShoot(ShootStrategy):
     def shoot(self,pool,pos):
       missile1 = pool.get_object(Projectile.__name__)
       missile2 = pool.get_object(Projectile.__name__)
