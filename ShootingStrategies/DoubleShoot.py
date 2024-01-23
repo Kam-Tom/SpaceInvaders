@@ -5,6 +5,8 @@ class DoubleShoot(ShootStrategy):
     def shoot(self,pool,pos):
       missile1 = pool.get_object(Projectile.__name__)
       missile2 = pool.get_object(Projectile.__name__)
+      missile1.size = (13,10)
+      missile2.size = (13,10)
       missile1.set_type("missile",15)
       missile2.set_type("missile",15)
       x1 = pos[0] - 15
