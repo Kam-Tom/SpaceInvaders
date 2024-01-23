@@ -1,5 +1,6 @@
 import pygame
 import random
+import math
 from Enemy.AIChicken import AIChicken
 from Ships.ShipModel import ShipModelFactory
 from constants import SCREEN_HEIGHT, SCREEN_WIDTH, BORDER
@@ -12,6 +13,9 @@ class Leghorn(AIChicken):
         self.ship_model = ship_model_factory.get_ship_type((50,50),(1,1),"Leghorn.jpg")
         self.rect = self.ship_model.image.get_rect()
         self.rect.center=(0,0)
+        self.angle = 0
+        self.rotation_speed = 0.05
+        self.radius = 5
 
         self.shoot_change = 0.001
 
@@ -44,23 +48,14 @@ class Leghorn(AIChicken):
         screen.blit(self.hp_image, hp_rect)
 
     def update(self):
-        
         if self.in_position == False:
             self.move_to_start()
             return
 
-        self.pos = (self.pos[0] + self.ship_model.base_speed[0] * self.dir[0],self.pos[1] +self.ship_model.base_speed[1] * self.dir[1])
-
+        self.angle += self.rotation_speed
+        self.pos = (self.pos[0] + math.cos(self.angle) * self.radius, self.pos[1] + math.sin(self.angle) * self.radius)
+        
         self.rect.center = self.pos
-
-        if self.pos[0] >= SCREEN_WIDTH - BORDER:
-            self.dir = (self.dir[0]*-1,self.dir[1]*-1)
-        if self.pos[0] <= BORDER:
-            self.dir = (self.dir[0]*-1,self.dir[1]*-1)
-        if self.pos[1] >= SCREEN_HEIGHT * 0.70:
-            self.dir = (self.dir[0]*-1,self.dir[1]*-1)
-        if self.pos[1] <= 0:
-            self.dir = (self.dir[0]*-1,self.dir[1]*-1)
 
         if random.random() < self.shoot_change:
             self.shoot()

@@ -116,21 +116,21 @@ class Game:
       if self.player not in self.game_objects:
          self.game_objects.append(self.player)
 
-      for i in range(100,1600,1600 - 100 * self.level): 
+      for i in range(0, self.level * 2): 
          ship = self.pool.get_object(Polish.__name__)
          ship.hp_reset()
-         ship.enable(i + random.randint(10, 100),70)
+         ship.enable(random.randint(BORDER * 2, SCREEN_WIDTH - BORDER * 2), random.randint(BORDER * 4, SCREEN_HEIGHT * 0.7 - BORDER * 2))
          self.game_objects.append(ship)
-      for i in range(100,1600,1000 - 200 * self.level):
+      for i in range(0, self.level * 2):
          ship = self.pool.get_object(Leghorn.__name__)
          ship.hp_reset()
-         ship.enable(i + random.randint(10, 100),120)
+         ship.enable(random.randint(BORDER * 2, SCREEN_WIDTH - BORDER * 2), random.randint(BORDER * 4, SCREEN_HEIGHT * 0.5 - BORDER * 2))
          self.game_objects.append(ship)
 
-      for i in range(100,1600,1600 - 150 * self.level):
+      for i in range(0, self.level * 3):
          ship = self.pool.get_object(Broiler.__name__)
          ship.hp_reset()
-         ship.enable(i + random.randint(10, 100),random.randint(0, 600))
+         ship.enable(random.randint(BORDER * 2, SCREEN_WIDTH - BORDER * 2), random.randint(BORDER * 4, SCREEN_HEIGHT * 0.7 - BORDER * 2))
          self.game_objects.append(ship)
 
 
