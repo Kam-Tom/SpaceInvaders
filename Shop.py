@@ -8,7 +8,7 @@ class Shop:
         self.game = game
         self.font = pygame.font.SysFont('comicsans', 50)
         self.title_font = pygame.font.SysFont('comicsans', 80)
-        explosion_image = pygame.image.load('Sprites/explosion.png')
+        explosion_image = pygame.image.load('Sprites/shop_item_1.png')
         resized_explosion_image = pygame.transform.scale(explosion_image, (150, 150))
         self.options = [(resized_explosion_image, 100), (resized_explosion_image, 200), (resized_explosion_image, 300)]
         self.selected_option = 0
