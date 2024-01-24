@@ -150,7 +150,7 @@ class Game:
       for i in range(0, self.level * 2):
          ship = self.pool.get_object(Leghorn.__name__)
          ship.hp_reset()
-         ship.enable(random.randint(BORDER * 2, SCREEN_WIDTH - BORDER * 2), random.randint(BORDER * 4, int(SCREEN_HEIGHT * 0.5) - BORDER * 2))
+         ship.enable(random.randint(BORDER * 5, SCREEN_WIDTH - BORDER * 5), random.randint(BORDER * 6, int(SCREEN_HEIGHT * 0.5) - BORDER * 2))
          self.game_objects.append(ship)
 
       for i in range(0, self.level * 3):
@@ -251,19 +251,8 @@ class Game:
       self.game_objects = []
 
    def game_over_handle_event(self, event):
-      #Mouse input
-      if event.type == pygame.MOUSEBUTTONDOWN:
-         mouse_pos = pygame.mouse.get_pos()
-         #retry
-         if self.retry_rect.collidepoint(mouse_pos):
-            self.clear_lvl()
-            self.generate_lvl()
-         #go back to menu
-         elif self.back_to_menu_rect.collidepoint(mouse_pos):
-            self.in_menu = True
-            self.clear_lvl()
       #Keyboard input
-      elif event.type == pygame.KEYDOWN:
+      if event.type == pygame.KEYDOWN:
          if event.key == pygame.K_UP:
             self.selected_option = (self.selected_option - 1) % 2
          elif event.key == pygame.K_DOWN:

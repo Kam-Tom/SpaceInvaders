@@ -69,7 +69,7 @@ class Broiler(AIChicken):
             self.dir = (1,1)
         if self.pos[1] >= SCREEN_HEIGHT * 0.70:
             self.dir = (self.dir[0],-1)
-        if self.pos[1] <= 0:
+        if self.pos[1] <= 25:
             self.dir = (self.dir[0],1)
 
         # Losowy strzał
